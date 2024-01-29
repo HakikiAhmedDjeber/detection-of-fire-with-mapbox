@@ -1,47 +1,30 @@
-import { MapContainer, Marker, TileLayer, Popup } from "react-leaflet";
-import L from "leaflet";
+import React, { useRef, useEffect, useState } from "react";
 import "./App.css";
+// import the map
+import mapboxgl from "!mapbox-gl"; // eslint-disable-line import/no-webpack-loader-syntax
 
-function App() {
+mapboxgl.accessToken =
+  "pk.eyJ1Ijoic2VyaGFuZW91c3NhbWEiLCJhIjoiY2xyejZ0OTF0MXE4dTJqcGJ2cWdtbWlzMyJ9.C0wZ14hebIIQrApUkF6uQQ";
+
+export default function App() {
+  const mapContainer = useRef(null);
+  const map = useRef(null);
+  const [lng, setLng] = useState(-70.9);
+  const [lat, setLat] = useState(42.35);
+  const [zoom, setZoom] = useState(9);
+
+  useEffect(() => {
+    if (map.current) return; // initialize map only once
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [lng, lat],
+      zoom: zoom,
+    });
+  });
   return (
-    <div className="App">
-      <MapContainer
-        center={[35.2, -0.641389]}
-        zoom={15}
-        scrollWheelZoom={false}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <Marker position={[35.2, -0.641389]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-        <Marker position={[35.2, -0.641389]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-        <Marker position={[35.2, -0.641389]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-        <Marker position={[35.2, -0.641389]}>
-          <Popup>
-            A pretty CSS3 popup. <br /> Easily customizable.
-          </Popup>
-        </Marker>
-      </MapContainer>
+    <div>
+      <div ref={mapContainer} className="map-container" />
     </div>
   );
 }
-let DefaultIcon = L.icon({
-  iconUrl: "sensor.png",
-  iconSize: [20, 20],
-});
-console.log(L.marker);
-L.Marker.prototype.options.icon = DefaultIcon;
-export default App;
