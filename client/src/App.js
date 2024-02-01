@@ -1,32 +1,34 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Header from "./Header";
 import "./App.css";
 import Map from "./Map";
 import Sidebar from "./Sidebar";
-
+import mqtt from "mqtt";
 export default function App() {
   const [mqttData, setMqttData] = useState("");
-
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("http://localhost:5001/api/mqttdata");
-        setMqttData(response.data.mqttData);
-      } catch (error) {
-        console.error("Error fetching MQTT data:", error.message);
-      }
+    const client = mqtt.connect("mqtt://2.tcp.eu.ngrok.io:12754");
+
+    client.on("connect", () => {
+      console.log("Connected to MQTT broker");
+      client.subscribe("testTopic");
+    });
+
+    client.on("message", (topic, message) => {
+      console.log(`Received message on topic ${topic}: ${message.toString()}`);
+      setMqttData(message.toString());
+    });
+
+    return () => {
+      client.end();
     };
-
-    fetchData();
   }, []);
-
   return (
     <div className="app">
       <Header />
       <main className="main">
         <Sidebar />
-        <Map />
+        <Map mqttMsg={mqttData} />
       </main>
     </div>
   );
