@@ -1,11 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
 
-import mapboxgl from "!mapbox-gl";
+import mapboxgl from "mapbox-gl";
 
 mapboxgl.accessToken =
   "pk.eyJ1Ijoic2VyaGFuZW91c3NhbWEiLCJhIjoiY2xyejZ0OTF0MXE4dTJqcGJ2cWdtbWlzMyJ9.C0wZ14hebIIQrApUkF6uQQ";
 
-export default function Map({ mqttMsg }) {
+export default function Map({ sensorData }) {
   const mapContainer = useRef(null);
   const map = useRef(null);
   const [lng, setLng] = useState(-0.41551);
@@ -16,7 +16,7 @@ export default function Map({ mqttMsg }) {
     if (map.current) {
       new mapboxgl.Marker()
         .setLngLat([lng, lat])
-        .setPopup(new mapboxgl.Popup().setHTML(`<h2>${mqttMsg}</h2>`))
+        .setPopup(new mapboxgl.Popup().setHTML(`<h2>${sensorData}</h2>`))
         .addTo(map.current);
       return;
     }
@@ -36,9 +36,9 @@ export default function Map({ mqttMsg }) {
 
     new mapboxgl.Marker()
       .setLngLat([lng, lat])
-      .setPopup(new mapboxgl.Popup().setHTML(`<h2>${mqttMsg}</h2>`))
+      .setPopup(new mapboxgl.Popup().setHTML(`<h2>${sensorData}</h2>`))
       .addTo(map.current);
-  }, [lat, lng, zoom, mqttMsg]);
+  }, [lat, lng, zoom, sensorData]);
   return (
     <div className="map">
       <div className="map-info">

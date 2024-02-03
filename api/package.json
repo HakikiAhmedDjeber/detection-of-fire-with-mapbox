@@ -1,19 +1,39 @@
 {
-  "name": "api",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "https": "^1.0.0",
-    "mqtt": "^5.3.5",
-    "ws": "^8.16.0"
+    "@apollo/client": "^3.5.8",
+    "@axelspringer/graphql-google-pubsub": "^2.1.0",
+    "@graphql-tools/schema": "^8.5.1",
+    "@pake/serialport-gsm": "^3.4.0",
+    "aedes": "^0.51.0",
+    "apollo-server": "^3.6.1",
+    "cross-fetch": "^3.1.5",
+    "dotenv": "^11.0.0",
+    "express-ws": "^5.0.2",
+    "fcm-node": "^1.6.1",
+    "graphql": "^16.8.1",
+    "graphql-redis-subscriptions": "^2.4.2",
+    "graphql-subscriptions": "^2.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.6",
+    "mongoose-paginate-v2": "^1.5.0",
+    "net": "^1.0.2",
+    "nodemon": "^2.0.15",
+    "react": "^17.0.2",
+    "react-apollo": "^3.1.5",
+    "serialport-gsm": "^3.4.2",
+    "socket.io": "^4.5.1",
+    "subscriptions-transport-ws": "^0.11.0",
+    "websocket": "^1.0.34"
   }
 }

@@ -3,32 +3,31 @@ import Header from "./Header";
 import "./App.css";
 import Map from "./Map";
 import Sidebar from "./Sidebar";
-import mqtt from "mqtt";
+import { useSubscriptionContext } from "./Context/SubscriptionContext";
+
+
 export default function App() {
-  const [mqttData, setMqttData] = useState("");
+  const [SensorData, setSensorData] = useState(null)
+
+  const { incomingData, loading, error } = useSubscriptionContext();
+
+
   useEffect(() => {
-    const client = mqtt.connect("mqtt://2.tcp.eu.ngrok.io:12754");
+    if (incomingData) {
+      let temp = incomingData?.data?.subscriptionTest
+      setSensorData(temp)
+      console.log(temp)
+    }
+  }, [incomingData])
 
-    client.on("connect", () => {
-      console.log("Connected to MQTT broker");
-      client.subscribe("testTopic");
-    });
 
-    client.on("message", (topic, message) => {
-      console.log(`Received message on topic ${topic}: ${message.toString()}`);
-      setMqttData(message.toString());
-    });
 
-    return () => {
-      client.end();
-    };
-  }, []);
   return (
     <div className="app">
       <Header />
       <main className="main">
         <Sidebar />
-        <Map mqttMsg={mqttData} />
+        <Map sensorData={SensorData} />
       </main>
     </div>
   );
