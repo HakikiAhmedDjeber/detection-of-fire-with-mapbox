@@ -1,6 +1,7 @@
 export default function Sidebar() {
   return (
     <div className="sidebar">
+      <h2 className="logo">Fire Detection</h2>
       <select className="select-forest">
         <option value="none" selected disabled hidden>
           choose a forest
