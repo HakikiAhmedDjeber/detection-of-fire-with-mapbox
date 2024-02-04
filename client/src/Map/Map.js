@@ -39,7 +39,18 @@ export default function Map({ sensorData }) {
       } = sensorData;
 
       if (!marker.current) {
-        marker.current = new mapboxgl.Marker({ draggable: true })
+        const customMarker = document.createElement("div");
+        customMarker.className = "custom-marker";
+        customMarker.style.backgroundImage = "url('/sensor.png')";
+        // customMarker.style.backgroundColor = "#000";
+        customMarker.style.width = "30px";
+        customMarker.style.height = "30px";
+        customMarker.style.backgroundSize = "100%";
+
+        marker.current = new mapboxgl.Marker({
+          element: customMarker,
+          draggable: true,
+        })
           .setLngLat([longitude, latitude])
           .setPopup(popup.current)
           .addTo(map.current);
