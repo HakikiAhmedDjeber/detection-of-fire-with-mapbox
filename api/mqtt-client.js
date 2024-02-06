@@ -1,5 +1,5 @@
 const mqtt = require("mqtt");
-const client = mqtt.connect("mqtt://7.tcp.eu.ngrok.io:18630"); // Use the correct broker address and port
+const client = mqtt.connect("mqtt://5.tcp.eu.ngrok.io:18900"); // Use the correct broker address and port
 
 client.on("connect", () => {
   console.log("Connected to MQTT broker");

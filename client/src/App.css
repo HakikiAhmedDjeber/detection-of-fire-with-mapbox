@@ -2,6 +2,9 @@
 :root {
   font-size: 62.5%;
   --main-green-color: #4caf50;
+  --main-blue-color: #001f3f;
+  --red-color: #ff4136;
+  --yellow-color: #ffdc00;
 }
 /* end varibales */
 /* start global rules */
@@ -68,9 +71,8 @@ textarea:focus {
   display: flex;
 }
 .app .main {
-  display: flex;
-  flex-direction: column;
-  width: 80%;
+  width: 100%;
+  height: 100vh;
 }
 /* end App */
 /* start map */
@@ -78,7 +80,7 @@ textarea:focus {
   position: relative;
 }
 .map .map-container {
-  height: calc(100vh - 5rem);
+  height: 100vh;
 }
 .map .map-info {
   background-color: rgb(35 55 75 / 90%);
@@ -87,8 +89,8 @@ textarea:focus {
   font-family: monospace;
   z-index: 1;
   position: absolute;
-  top: 0;
-  left: 0;
+  bottom: 0;
+  right: 0;
   margin: 12px;
   border-radius: 4px;
 }
@@ -108,21 +110,67 @@ textarea:focus {
 /* end header */
 /* start sidebar */
 .sidebar {
-  background-color: var(--main-green-color);
-  width: 20%;
+  position: absolute;
   display: flex;
   align-items: center;
   flex-direction: column;
+  top: 50%;
+  width: 20%;
+  height: 95%;
   padding: 2rem 0;
   gap: 1rem;
+  transform: translateY(-50%);
+  background-color: #4caf50a6;
+  z-index: 5;
+  -webkit-backdrop-filter: blur(2.5px);
+  backdrop-filter: blur(2.5px);
+  border-radius: 0 5px 5px 0;
 }
 .sidebar .logo {
+  width: 100%;
+  background-color: var(--main-green-color);
   font-size: 2rem;
   font-weight: 900;
   color: white;
+  text-align: center;
+  padding: 5px;
 }
-.sidebar .select-forest {
-  width: 80%;
+.sidebar .clock {
+  font-size: 2rem;
+  padding: 1rem;
+  font-weight: bold;
+}
+.sidebar .sensors {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.sidebar .sensors li {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  align-items: center;
+  width: 10rem;
+  height: 8rem;
+  border: 1px solid var(--main-green-color);
+  border-radius: 5px;
+  padding: 5px;
+  color: black;
+  background-color: var(--main-green-color);
+}
+.sidebar .sensors li.selected {
+  background-color: #fff;
+  border: 4px solid var(--main-green-color);
+  border-radius: 0;
+}
+.sidebar .sensors li img {
+  width: 4rem;
+}
+.sidebar .sensors li p {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 /* end sidebar */
 /* start popup */

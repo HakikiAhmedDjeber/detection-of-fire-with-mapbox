@@ -21,9 +21,8 @@ export default function App() {
 
   return (
     <div className="app">
-      <Sidebar />
       <main className="main">
-        <Header />
+        <Sidebar />
         <Map sensorData={JSON.parse(SensorData)} />
       </main>
     </div>
