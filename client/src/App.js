@@ -7,9 +7,13 @@ import { useSubscriptionContext } from "./Context/SubscriptionContext";
 
 export default function App() {
   const [SensorData, setSensorData] = useState(null);
+  const [regionName, setRegionName] = useState("");
 
   const { incomingData, loading, error } = useSubscriptionContext();
 
+  function handleRegionName(name) {
+    setRegionName(name);
+  }
   useEffect(() => {
     if (incomingData) {
       let temp = incomingData?.data?.subscriptionTest;
@@ -22,8 +26,12 @@ export default function App() {
   return (
     <div className="app">
       <main className="main">
-        <Sidebar />
-        <Map sensorData={JSON.parse(SensorData)} />
+        <Sidebar region={regionName} />
+        <Map
+          sensorData={JSON.parse(SensorData)}
+          regionName={regionName}
+          setRegionName={handleRegionName}
+        />
       </main>
     </div>
   );

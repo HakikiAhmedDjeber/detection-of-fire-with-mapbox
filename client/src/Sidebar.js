@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function Sidebar() {
+export default function Sidebar({ region }) {
   const [time, setTime] = useState(clock());
 
   function clock() {
@@ -23,7 +23,7 @@ export default function Sidebar() {
     <div className="sidebar">
       <h2 className="logo">Fire Detection</h2>
       <p className="clock">{time}</p>
-      <p>region</p>
+      <p>{region}</p>
       <ul className="sensors">
         <li className="selected">
           <img src="./sensor.png" width={20} />
