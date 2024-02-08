@@ -1,20 +1,20 @@
 import React, { useRef, useEffect, useState } from "react";
 import mapboxgl from "mapbox-gl";
-import MapGl, { Marker, Popup } from "react-map-gl";
+import MapGl, { Marker, Popup, useMap } from "react-map-gl";
 import axios from "axios";
 
 const accessToken =
   "pk.eyJ1Ijoic2VyaGFuZW91c3NhbWEiLCJhIjoiY2xyejZ0OTF0MXE4dTJqcGJ2cWdtbWlzMyJ9.C0wZ14hebIIQrApUkF6uQQ";
 
-export default function Map({ sensorData, setRegionName }) {
-  const map = useRef(null);
+export default function Map({
+  sensorData,
+  setRegionName,
+  viewport,
+  setViewport,
+  handleChart,
+}) {
   const marker = useRef(null);
   const popup = useRef(<Popup />);
-  const [viewport, setViewport] = useState({
-    longitude: -0.41551,
-    latitude: 35.20779,
-    zoom: 9,
-  });
   const [lng, setLng] = useState(-0.41551);
   const [lat, setLat] = useState(35.20779);
   const [zoom, setZoom] = useState(9);
@@ -33,7 +33,7 @@ export default function Map({ sensorData, setRegionName }) {
           `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}`
         );
         if (response.data && response.data.features.length > 0) {
-          const firstFeature = response.data.features[0];
+          const firstFeature = response.data.features[1];
           setRegionName(firstFeature.place_name);
         }
       } catch (error) {
@@ -44,6 +44,7 @@ export default function Map({ sensorData, setRegionName }) {
     // Fetch region name when viewport changes
     fetchRegionName(viewport.latitude, viewport.longitude);
   }, [viewport, accessToken, setRegionName]);
+  // change the viewport data
   const handleViewportChange = (newViewport) => {
     let { latitude, longitude, zoom } = newViewport;
     latitude = latitude.toFixed(5);
@@ -52,6 +53,7 @@ export default function Map({ sensorData, setRegionName }) {
     setViewport({ latitude, longitude, zoom });
     console.log({ latitude, longitude, zoom });
   };
+
   return (
     <div className="map">
       <div className="map-info">
@@ -60,10 +62,10 @@ export default function Map({ sensorData, setRegionName }) {
       </div>
       <div className="map-container">
         <MapGl
-          ref={map}
+          id="myMap"
           mapboxAccessToken={accessToken}
           initialViewState={viewport}
-          mapStyle="mapbox://styles/mapbox/streets-v12"
+          mapStyle="mapbox://styles/mapbox/outdoors-v12"
           onMove={(event) => handleViewportChange(event.viewState)}
         >
           <Marker
@@ -72,44 +74,53 @@ export default function Map({ sensorData, setRegionName }) {
             latitude={lat}
             offsetLeft={-20}
             offsetTop={-10}
-            draggable
-            onDragEnd={(event) => {
-              setLng(event.lngLat[0]);
-              setLat(event.lngLat[1]);
-            }}
+            // draggable
+            // onDragEnd={(event) => {
+            //   setLng(event.lngLat[0]);
+            //   setLat(event.lngLat[1]);
+            // }}
             onClick={handleClick}
           >
             <img src="./sensor.png" width={30} height={30} />
+
+            {openPopup && (
+              <Popup
+                ref={popup}
+                latitude={lat}
+                longitude={lng}
+                closeButton={true}
+                closeOnClick={false}
+                onClose={() => setOpenPopup(false)}
+              >
+                {!sensorData ? (
+                  <SensorPopup handleChart={handleChart} />
+                ) : (
+                  <SensorPopup
+                    lat={sensorData.location.latitude}
+                    lng={sensorData.location.longitude}
+                    temp={sensorData.data.Temperature}
+                    gas={sensorData.data.Gas}
+                    air={sensorData.data.Air}
+                    handleChart={handleChart}
+                  />
+                )}
+              </Popup>
+            )}
           </Marker>
-          {openPopup && (
-            <Popup
-              ref={popup}
-              latitude={lat}
-              longitude={lng}
-              closeButton={true}
-              closeOnClick={false}
-              onClose={() => setOpenPopup(false)}
-            >
-              {!sensorData ? (
-                <SensorPopup />
-              ) : (
-                <SensorPopup
-                  lat={sensorData.location.latitude}
-                  lng={sensorData.location.longitude}
-                  temp={sensorData.data.Temperature}
-                  gas={sensorData.data.Gas}
-                  air={sensorData.data.Air}
-                />
-              )}
-            </Popup>
-          )}
         </MapGl>
       </div>
     </div>
   );
 }
 
-function SensorPopup({ lat = 0, lng = 0, temp = 0, gas = 0, air = 0 }) {
+function SensorPopup({
+  lat = 0,
+  lng = 0,
+  temp = 0,
+  gas = 0,
+  air = 0,
+  handleChart,
+}) {
   return (
     <div className="popup">
       <div className="location">
@@ -135,6 +146,9 @@ function SensorPopup({ lat = 0, lng = 0, temp = 0, gas = 0, air = 0 }) {
           <p>{air}</p>
         </li>
       </ul>
+      <span className="showChart" onClick={() => handleChart()}>
+        show chart
+      </span>
     </div>
   );
 }

@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 
-export default function Sidebar({ region }) {
+const sensors = [
+  {
+    longitude: -0.41551,
+    latitude: 35.20779,
+  },
+];
+export default function Sidebar({ region, selectSensor }) {
   const [time, setTime] = useState(clock());
 
   function clock() {
@@ -10,6 +16,11 @@ export default function Sidebar({ region }) {
     const seconds = now.getSeconds().toString().padStart(2, "0");
 
     return `${hours}:${minutes}:${seconds}`;
+  }
+
+  // handle click sensor
+  function HandleClickSensor(coordinates) {
+    selectSensor({ ...coordinates, zoom: 11 });
   }
 
   useEffect(() => {
@@ -23,9 +34,9 @@ export default function Sidebar({ region }) {
     <div className="sidebar">
       <h2 className="logo">Fire Detection</h2>
       <p className="clock">{time}</p>
-      <p>{region}</p>
+      <p className="region">{region}</p>
       <ul className="sensors">
-        <li className="selected">
+        <li className="selected" onClick={() => HandleClickSensor(sensors[0])}>
           <img src="./sensor.png" width={20} />
           <p>sensor 1</p>
         </li>
