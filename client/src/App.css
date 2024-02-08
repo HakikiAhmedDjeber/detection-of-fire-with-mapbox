@@ -85,6 +85,7 @@ textarea:focus {
   height: 100vh;
 }
 .map .map-info {
+  font-size: 1rem;
   background-color: rgba(35, 55, 75, 0);
   color: #000;
   padding: 6px 12px;
@@ -235,6 +236,7 @@ textarea:focus {
   -webkit-backdrop-filter: blur(25px);
   backdrop-filter: blur(25px);
   border-radius: 5px 5px 0 0;
+  transition: transform 0.5s ease;
 }
 .chartClose {
   font-size: 2rem;
@@ -244,12 +246,24 @@ textarea:focus {
 .chartUp {
   animation: moveBox 2s ease-in-out forwards;
 }
+
 @keyframes moveBox {
   from {
     transform: translate(-5%, 100%);
   }
   to {
     transform: translate(-5%, 0);
+  }
+}
+.chartDown {
+  animation: hideBox 2s ease-in-out forwards;
+}
+@keyframes hideBox {
+  from {
+    transform: translate(-5%, 0);
+  }
+  to {
+    transform: translate(-5%, 100%);
   }
 }
 /* end chart */

@@ -50,7 +50,9 @@ export default function App() {
           setViewport={setViewport}
           handleChart={handleChartOpen}
         />
-        <Chart chartOpen={isChartOpen} handleChart={handleChartOpen} />
+        {isChartOpen && (
+          <Chart chartOpen={isChartOpen} handleChart={handleChartOpen} />
+        )}
       </main>
     </div>
   );
