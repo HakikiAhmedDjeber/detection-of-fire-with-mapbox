@@ -17,6 +17,7 @@ const { SubscriptionServer } = require("subscriptions-transport-ws");
 
 const dotenv = require("dotenv");
 const pubsub = require("./src/graphql/utils/pubsub.js");
+const { saveReceivedData } = require("./src/graphql/functions/HelperFunctions.js");
 dotenv.config();
 
 const corsConfig = {
@@ -60,12 +61,13 @@ const { DB_URI, DB_NAME } = process.env;
         const payload = packet.payload.toString('utf8');
         const clientId = client ? client.id : null;
 
-        // console.log(`Client ${clientId} published to topic '${topic}' with payload: ${payload}`);
-
-
         try {
             await pubsub.publish(topic, { payload });
-            // console.log('Message published successfully.');
+            console.log(`Client ${clientId} published to topic '${topic}' with payload: ${payload}`);
+            if (topic === "NEW_DATA") {
+                saveReceivedData(payload)  /// save received data from device to database based on its topic 
+            }
+
         } catch (error) {
             console.error('Error publishing message:', error);
         }

@@ -1,0 +1,2 @@
+Express issue: 
+follow sol 2 in : https://copyprogramming.com/howto/mime-lookup-is-not-a-function-in-node-js
