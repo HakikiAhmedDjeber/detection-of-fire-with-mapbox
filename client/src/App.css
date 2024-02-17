@@ -192,12 +192,14 @@ textarea:focus {
 .popup .location {
   padding: 5px 0;
   display: flex;
+  justify-content: space-between;
   gap: 1rem;
   border-bottom: 2px solid var(--main-green-color);
 }
 .popup .data {
   display: flex;
   justify-content: space-between;
+  gap: 5px;
   padding: 10px 5px;
 }
 .popup li {
@@ -267,3 +269,10 @@ textarea:focus {
   }
 }
 /* end chart */
+.link {
+  font-size: 2rem;
+  color: var(--main-blue-color);
+  text-decoration: underline;
+  text-transform: capitalize;
+  float: right;
+}
