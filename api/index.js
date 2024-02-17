@@ -152,6 +152,13 @@ const { DB_URI, DB_NAME } = process.env;
         }
     });
 
+    app.get('/newdata2', async (req, res) => {
+        const id = req.query.id;
+        const name = req.query.name;
+        console.log("ID:", id);
+        console.log("Name:", name);
+        res.send('Data received successfully!');
+    });
 
 
     await server.start();
