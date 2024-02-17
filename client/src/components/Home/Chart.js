@@ -10,15 +10,15 @@ import {
   Area,
   Legend,
 } from "recharts";
-
+import { Link } from "react-router-dom";
 export default function Chart({ chartOpen, handleChart }) {
   const [closeChart, setChartClose] = useState(false);
   const [data, setData] = useState([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // Generate random temperature between 0 and 100
-      const newTemperature = Math.floor(Math.random() * 40);
+      // Generate random temperature between 19 and 22
+      const newTemperature = Math.floor(Math.random() * 4) + 19;
       // Get current time
       const now = new Date();
       // Format time as "HH:MM:SS"
@@ -31,7 +31,7 @@ export default function Chart({ chartOpen, handleChart }) {
         ...prevData,
         { time, temperature: newTemperature },
       ]);
-    }, 10000); // Every 10 seconds
+    }, 5000); // Every 5 seconds
 
     // Clean up interval on component unmount
     return () => clearInterval(interval);
@@ -41,7 +41,7 @@ export default function Chart({ chartOpen, handleChart }) {
       <div className="chartClose" onClick={() => handleChart()}>
         &#10006;
       </div>
-      <AreaChart width={600} height={300} data={data}>
+      <AreaChart width={800} height={300} data={data}>
         <Area
           type="monotone"
           dataKey="temperature"
@@ -54,6 +54,9 @@ export default function Chart({ chartOpen, handleChart }) {
         <Tooltip />
         <Legend />
       </AreaChart>
+      <div className="link">
+        <Link to="./history">see details</Link>
+      </div>
     </div>
   );
 }
