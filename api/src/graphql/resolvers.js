@@ -94,7 +94,7 @@ module.exports = {
             },
             resolve: (payload) => {
                 // This function is called whenever a new event is published
-                console.log(payload)
+                // console.log(payload)
                 return payload; // Assuming message is the field you want to return
             },
         },

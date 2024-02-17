@@ -144,7 +144,7 @@ const { DB_URI, DB_NAME } = process.env;
 
             await pubsub.publish("NEW_DATA", dataToPublish);
             await saveReceivedData(dataToPublish); // Assuming saveReceivedData is an asynchronous function
-            console.log('Data saved successfully!');
+            // console.log('Data saved successfully!');
             res.send('Data saved successfully!');
         } catch (error) {
             console.error('Error:', error);
