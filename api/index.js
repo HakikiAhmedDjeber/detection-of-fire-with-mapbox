@@ -39,39 +39,41 @@ const { DB_URI, DB_NAME } = process.env;
         resolvers
     });
 
-    // MQTT broker setup
-    const mqttServer = require('net').createServer(aedes.handle);
-    const mqttPort = 1884;
-
-    // Listen for the 'client' event
-    aedes.on('client', (client) => {
-        console.log(`Client connected: ${client.id}`);
-    });
-
-    // Start MQTT broker
-    mqttServer.listen(mqttPort, () => {
-        console.log(`MQTT broker started and listening on port ${mqttPort}`);
-    });
 
 
-    // Listen for the 'publish' event to capture publish events
-    aedes.on('publish', async (packet, client) => {
-
-        const topic = packet.topic.toString();
-        const payload = packet.payload.toString('utf8');
-        const clientId = client ? client.id : null;
-
-        try {
-            await pubsub.publish(topic, { payload });
-            console.log(`Client ${clientId} published to topic '${topic}' with payload: ${payload}`);
-            if (topic === "NEW_DATA") {
-                saveReceivedData(payload)  /// save received data from device to database based on its topic 
+    /*     // MQTT broker setup
+        const mqttServer = require('net').createServer(aedes.handle);
+        const mqttPort = 1884;
+    
+        // Listen for the 'client' event
+        aedes.on('client', (client) => {
+            console.log(`Client connected: ${client.id}`);
+        });
+    
+        // Start MQTT broker
+        mqttServer.listen(mqttPort, () => {
+            console.log(`MQTT broker started and listening on port ${mqttPort}`);
+        });
+    
+    
+        // Listen for the 'publish' event to capture publish events
+        aedes.on('publish', async (packet, client) => {
+    
+            const topic = packet.topic.toString();
+            const payload = packet.payload.toString('utf8');
+            const clientId = client ? client.id : null;
+    
+            try {
+                await pubsub.publish(topic, { payload });
+                console.log(`Client ${clientId} published to topic '${topic}' with payload: ${payload}`);
+                if (topic === "NEW_DATA") {
+                    saveReceivedData(payload)  /// save received data from device to database based on its topic 
+                }
+    
+            } catch (error) {
+                console.error('Error publishing message:', error);
             }
-
-        } catch (error) {
-            console.error('Error publishing message:', error);
-        }
-    });
+        }); */
 
     // new lines for subserver setup
     const subscriptionServer = SubscriptionServer.create(
@@ -120,7 +122,6 @@ const { DB_URI, DB_NAME } = process.env;
 
     });
 
-
     app.use(bodyParser.json());
     app.use((req, res, next) => {
 
@@ -134,6 +135,24 @@ const { DB_URI, DB_NAME } = process.env;
     })
 
     app.use(cors())
+
+    app.post('/newdata', async (req, res) => {
+        const newData = req.body; // Accessing the JSON object from the request body
+        //  console.log("received ", newData); // Logging the received JSON object to the console
+        try {
+            let dataToPublish = JSON.stringify(newData)
+
+            await pubsub.publish("NEW_DATA", dataToPublish);
+            await saveReceivedData(dataToPublish); // Assuming saveReceivedData is an asynchronous function
+            console.log('Data saved successfully!');
+            res.send('Data saved successfully!');
+        } catch (error) {
+            console.error('Error:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+
+
 
     await server.start();
 
