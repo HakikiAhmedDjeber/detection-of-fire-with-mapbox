@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import "../../App.css";
 import Map from "./Map";
 import Sidebar from "./Sidebar";
 import Chart from "./Chart";
