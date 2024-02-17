@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from "react";
-import Header from "./components/Home/Header";
-import "./App.css";
-import Map from "./components/Home/Map";
-import Sidebar from "./components/Home/Sidebar";
-import { useSubscriptionContext } from "./Context/SubscriptionContext";
-import Chart from "./components/Home/Chart";
+import Map from "./Map";
+import Sidebar from "./Sidebar";
+import Chart from "./Chart";
+import { useSubscriptionContext } from "../../Context/SubscriptionContext";
 import { useLazyQuery } from "@apollo/client";
 import {
   GET_ALL_SENSSED_DATA,
   GET_ALL_SENSSED_DATA_BY_DEVICE,
-} from "./GraphQL/queries";
+} from "../../GraphQL/queries";
 
-// import for routes
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./components/Home/Home";
-import History from "./components/History/History";
-
-export default function App() {
+export default function Home() {
   const [SensorData, setSensorData] = useState(null);
   const [regionName, setRegionName] = useState("");
   const [isChartOpen, setIsChartOpen] = useState(false);
@@ -89,13 +82,17 @@ export default function App() {
   }, [incomingData]);
 
   return (
-    <div className="app">
-      <Router>
-        <Routes>
-          <Route exact path="/" element={<Home />} />
-          <Route path="/history" element={<History />} />
-        </Routes>
-      </Router>
-    </div>
+    <main className="main">
+      <Sidebar region={regionName} selectSensor={handleViewport} />
+      <Map
+        sensorData={JSON.parse(SensorData)}
+        regionName={regionName}
+        setRegionName={handleRegionName}
+        viewport={viewport}
+        setViewport={setViewport}
+        handleChart={handleChartOpen}
+      />
+      <Chart chartOpen={isChartOpen} handleChart={handleChartOpen} />
+    </main>
   );
 }

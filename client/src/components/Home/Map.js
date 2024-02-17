@@ -6,13 +6,19 @@ import axios from "axios";
 const accessToken =
   "pk.eyJ1Ijoic2VyaGFuZW91c3NhbWEiLCJhIjoiY2xyejZ0OTF0MXE4dTJqcGJ2cWdtbWlzMyJ9.C0wZ14hebIIQrApUkF6uQQ";
 
+const markers = [
+  { lat: 35.204, lng: -0.42 },
+  { lat: 35.204, lng: -0.41552 },
+  { lat: 35.2, lng: -0.416 },
+  { lat: 35.2, lng: -0.41 },
+];
 export default function Map({
-  sensorData,
   setRegionName,
   viewport,
   setViewport,
   handleChart,
 }) {
+  const [sensorData, SetSensorData] = useState(null);
   const marker = useRef(null);
   const popup = useRef(<Popup />);
   const [lng, setLng] = useState(-0.41551);
@@ -54,6 +60,31 @@ export default function Map({
     console.log({ latitude, longitude, zoom });
   };
 
+  const markers = [
+    { lat: 35.20779, lng: -0.405 },
+    { lat: 35.2078, lng: -0.405 },
+    { lat: 35.2, lng: -0.4155 },
+    { lat: 35.2, lng: -0.405 },
+  ];
+
+  useEffect(() => {
+    setInterval(() => {
+      SetSensorData({
+        id: "123",
+        location: {
+          longitude: -0.41551,
+          latitude: 35.20779,
+        },
+        data: {
+          Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
+          Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
+          Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
+          Fire: 0,
+          Light: 240,
+        },
+      });
+    }, 5000);
+  }, []);
   return (
     <div className="map">
       <div className="map-info">
@@ -74,11 +105,6 @@ export default function Map({
             latitude={lat}
             offsetLeft={-20}
             offsetTop={-10}
-            // draggable
-            // onDragEnd={(event) => {
-            //   setLng(event.lngLat[0]);
-            //   setLat(event.lngLat[1]);
-            // }}
             onClick={handleClick}
           >
             <img src="./sensor.png" width={30} height={30} />
@@ -100,12 +126,54 @@ export default function Map({
                     lng={sensorData.location.longitude}
                     temp={sensorData.data.Temperature}
                     gas={sensorData.data.Gas}
-                    air={sensorData.data.Air}
+                    hum={sensorData.data.Humidity}
                     handleChart={handleChart}
                   />
                 )}
               </Popup>
             )}
+          </Marker>
+          <Marker
+            longitude={markers[1].lng}
+            latitude={markers[1].lat}
+            offsetLeft={-20}
+            offsetTop={-10}
+            // draggable
+            // onDragEnd={(event) => {
+            //   setLng(event.lngLat[0]);
+            //   setLat(event.lngLat[1]);
+            // }}
+            onClick={handleClick}
+          >
+            <img src="./sensor.png" width={30} height={30} />
+          </Marker>
+          <Marker
+            longitude={markers[2].lng}
+            latitude={markers[2].lat}
+            offsetLeft={-20}
+            offsetTop={-10}
+            // draggable
+            // onDragEnd={(event) => {
+            //   setLng(event.lngLat[0]);
+            //   setLat(event.lngLat[1]);
+            // }}
+            onClick={handleClick}
+          >
+            <img src="./sensor.png" width={30} height={30} />
+          </Marker>
+          <Marker
+            longitude={markers[3].lng}
+            latitude={markers[3].lat}
+            offsetLeft={-20}
+            offsetTop={-10}
+            // draggable
+            // onDragEnd={(event) => {
+            //   setLng(event.lngLat[0]);
+            //   setLat(event.lngLat[1]);
+            // }}
+            onClick={handleClick}
+          >
+            <img src="./sensor.png" width={30} height={30} />
           </Marker>
         </MapGl>
       </div>
@@ -118,7 +186,7 @@ function SensorPopup({
   lng = 0,
   temp = 0,
   gas = 0,
-  air = 0,
+  hum = 0,
   handleChart,
 }) {
   return (
@@ -128,6 +196,7 @@ function SensorPopup({
           <b>Lat : </b>
           {lat}
         </span>
+        <span>||</span>
         <span id="lng">
           <b>Lang : </b> {lng}
         </span>
@@ -142,8 +211,8 @@ function SensorPopup({
           <p>{gas}</p>
         </li>
         <li>
-          <h4>Air</h4>
-          <p>{air}</p>
+          <h4>Hum</h4>
+          <p>{hum}</p>
         </li>
       </ul>
       <span className="showChart" onClick={() => handleChart()}>

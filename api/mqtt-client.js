@@ -3,7 +3,7 @@ const client = mqtt.connect("mqtt://0.tcp.ngrok.io:11217"); // Use the correct b
 
 client.on("connect", () => {
   console.log("Connected to MQTT broker");
-  client.subscribe("testTopic2", (err, granted) => {
+  client.subscribe("NEW_DATA2", (err, granted) => {
     if (!err) {
       console.log("Subscribed to testTopic");
     }
@@ -27,7 +27,7 @@ client.on("connect", () => {
     };
 
     const jsonString = JSON.stringify(ToSend);
-    client.publish("testTopic", jsonString);
+    client.publish("NEW_DATA", jsonString);
   }, 1000);
 });
 
