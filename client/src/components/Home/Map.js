@@ -1,17 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
-import mapboxgl from "mapbox-gl";
-import MapGl, { Marker, Popup, useMap } from "react-map-gl";
+import MapGl from "react-map-gl";
 import axios from "axios";
+import Point from "./Point";
 
 const accessToken =
   "pk.eyJ1Ijoic2VyaGFuZW91c3NhbWEiLCJhIjoiY2xyejZ0OTF0MXE4dTJqcGJ2cWdtbWlzMyJ9.C0wZ14hebIIQrApUkF6uQQ";
 
-const markers = [
-  { lat: 35.204, lng: -0.42 },
-  { lat: 35.204, lng: -0.41552 },
-  { lat: 35.2, lng: -0.416 },
-  { lat: 35.2, lng: -0.41 },
-];
 export default function Map({
   setRegionName,
   viewport,
@@ -19,12 +13,11 @@ export default function Map({
   handleChart,
 }) {
   const [sensorData, SetSensorData] = useState(null);
-  const marker = useRef(null);
-  const popup = useRef(<Popup />);
   const [lng, setLng] = useState(-0.41551);
   const [lat, setLat] = useState(35.20779);
   const [zoom, setZoom] = useState(9);
   const [isSensorOpen, setIsSensorOpen] = useState(true);
+
   const [openPopup, setOpenPopup] = useState(false);
 
   const handleClick = () => {
@@ -61,7 +54,7 @@ export default function Map({
   };
 
   const markers = [
-    { lat: 35.20779, lng: -0.405 },
+    { lat: lat, lng: lng },
     { lat: 35.2078, lng: -0.405 },
     { lat: 35.2, lng: -0.4155 },
     { lat: 35.2, lng: -0.405 },
@@ -99,125 +92,19 @@ export default function Map({
           mapStyle="mapbox://styles/mapbox/outdoors-v12"
           onMove={(event) => handleViewportChange(event.viewState)}
         >
-          <Marker
-            ref={marker}
-            longitude={lng}
-            latitude={lat}
-            offsetLeft={-20}
-            offsetTop={-10}
-            onClick={handleClick}
-          >
-            <img src="./sensor.png" width={30} height={30} />
-
-            {openPopup && (
-              <Popup
-                ref={popup}
-                latitude={lat}
-                longitude={lng}
-                closeButton={true}
-                closeOnClick={false}
-                onClose={() => setOpenPopup(false)}
-              >
-                {!sensorData ? (
-                  <SensorPopup handleChart={handleChart} />
-                ) : (
-                  <SensorPopup
-                    lat={sensorData.location.latitude}
-                    lng={sensorData.location.longitude}
-                    temp={sensorData.data.Temperature}
-                    gas={sensorData.data.Gas}
-                    hum={sensorData.data.Humidity}
-                    handleChart={handleChart}
-                  />
-                )}
-              </Popup>
-            )}
-          </Marker>
-          <Marker
-            longitude={markers[1].lng}
-            latitude={markers[1].lat}
-            offsetLeft={-20}
-            offsetTop={-10}
-            // draggable
-            // onDragEnd={(event) => {
-            //   setLng(event.lngLat[0]);
-            //   setLat(event.lngLat[1]);
-            // }}
-            onClick={handleClick}
-          >
-            <img src="./sensor.png" width={30} height={30} />
-          </Marker>
-          <Marker
-            longitude={markers[2].lng}
-            latitude={markers[2].lat}
-            offsetLeft={-20}
-            offsetTop={-10}
-            // draggable
-            // onDragEnd={(event) => {
-            //   setLng(event.lngLat[0]);
-            //   setLat(event.lngLat[1]);
-            // }}
-            onClick={handleClick}
-          >
-            <img src="./sensor.png" width={30} height={30} />
-          </Marker>
-          <Marker
-            longitude={markers[3].lng}
-            latitude={markers[3].lat}
-            offsetLeft={-20}
-            offsetTop={-10}
-            // draggable
-            // onDragEnd={(event) => {
-            //   setLng(event.lngLat[0]);
-            //   setLat(event.lngLat[1]);
-            // }}
-            onClick={handleClick}
-          >
-            <img src="./sensor.png" width={30} height={30} />
-          </Marker>
+          {markers.map((ele, i) => {
+            return (
+              <Point
+                lng={ele.lng}
+                lat={ele.lat}
+                handleChart={handleChart}
+                sensorData={sensorData}
+                key={i}
+              />
+            );
+          })}
         </MapGl>
       </div>
-    </div>
-  );
-}
-
-function SensorPopup({
-  lat = 0,
-  lng = 0,
-  temp = 0,
-  gas = 0,
-  hum = 0,
-  handleChart,
-}) {
-  return (
-    <div className="popup">
-      <div className="location">
-        <span id="lat">
-          <b>Lat : </b>
-          {lat}
-        </span>
-        <span>||</span>
-        <span id="lng">
-          <b>Lang : </b> {lng}
-        </span>
-      </div>
-      <ul className="data">
-        <li>
-          <h4>Temp</h4>
-          <p>{temp}</p>
-        </li>
-        <li>
-          <h4>Gas</h4>
-          <p>{gas}</p>
-        </li>
-        <li>
-          <h4>Hum</h4>
-          <p>{hum}</p>
-        </li>
-      </ul>
-      <span className="showChart" onClick={() => handleChart()}>
-        show chart
-      </span>
     </div>
   );
 }
