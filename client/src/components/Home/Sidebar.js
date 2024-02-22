@@ -1,14 +1,20 @@
 import { useState, useEffect } from "react";
 
 const sensors = [
-  {
-    longitude: -0.41551,
-    latitude: 35.20779,
-  },
+  { latitude: 35.20779, longitude: -0.41551 },
+  { latitude: 35.2078, longitude: -0.405 },
+  { latitude: 35.2, longitude: -0.4155 },
+  { latitude: 35.2, longitude: -0.405 },
 ];
+// const sensors = [
+//   {
+//     longitude: -0.41551,
+//     latitude: 35.20779,
+//   },
+// ];
 export default function Sidebar({ region, selectSensor }) {
   const [time, setTime] = useState(clock());
-
+  const [openSensor, SetOpenSensor] = useState([]);
   function clock() {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, "0");
@@ -20,7 +26,8 @@ export default function Sidebar({ region, selectSensor }) {
 
   // handle click sensor
   function HandleClickSensor(coordinates) {
-    selectSensor({ ...coordinates, zoom: 11 });
+    SetOpenSensor(coordinates);
+    selectSensor({ ...coordinates, zoom: 12 });
   }
 
   useEffect(() => {
@@ -36,22 +43,17 @@ export default function Sidebar({ region, selectSensor }) {
       <p className="clock">{time}</p>
       <p className="region">{region}</p>
       <ul className="sensors">
-        <li className="selected" onClick={() => HandleClickSensor(sensors[0])}>
-          <img src="./sensor.png" width={20} />
-          <p>sensor 1</p>
-        </li>
-        <li>
-          <img src="./sensor.png" width={20} />
-          <p>sensor 2</p>
-        </li>
-        <li>
-          <img src="./sensor.png" width={20} />
-          <p>sensor 3</p>
-        </li>
-        <li>
-          <img src="./sensor.png" width={20} />
-          <p>sensor 4</p>
-        </li>
+        {sensors.map((sensor, i) => {
+          return (
+            <li
+              className={sensor === openSensor ? "selected" : ""}
+              onClick={() => HandleClickSensor(sensor)}
+            >
+              <img src="./sensor.png" width={20} />
+              <p>sensor {i + 1}</p>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

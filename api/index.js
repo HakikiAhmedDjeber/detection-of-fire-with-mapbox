@@ -5,43 +5,39 @@ const { ApolloServer } = require("apollo-server-express");
 const mongoose = require("mongoose");
 const typeDefs = require("./src/graphql/typeDef.js");
 const resolvers = require("./src/graphql/resolvers.js");
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const aedes = require('aedes')();
-
+const bodyParser = require("body-parser");
+const cors = require("cors");
+const aedes = require("aedes")();
 
 // new import for sub server setup
 const { execute, subscribe } = require("graphql");
 const { SubscriptionServer } = require("subscriptions-transport-ws");
 
-
 const dotenv = require("dotenv");
 const pubsub = require("./src/graphql/utils/pubsub.js");
-const { saveReceivedData } = require("./src/graphql/functions/HelperFunctions.js");
+const {
+  saveReceivedData,
+} = require("./src/graphql/functions/HelperFunctions.js");
 dotenv.config();
 
 const corsConfig = {
-    credentials: true,
-    allowedHeaders: ['Authorization'],
-    exposedHeaders: ['Authorization'],
+  credentials: true,
+  allowedHeaders: ["Authorization"],
+  exposedHeaders: ["Authorization"],
 };
-const path = '/detector';
+const path = "/detector";
 
 const { DB_URI, DB_NAME } = process.env;
 
-
 (async function () {
+  const app = express();
+  const httpServer = createServer(app);
+  const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers,
+  });
 
-    const app = express();
-    const httpServer = createServer(app);
-    const schema = makeExecutableSchema({
-        typeDefs,
-        resolvers
-    });
-
-
-
-    /*     // MQTT broker setup
+  /*     // MQTT broker setup
         const mqttServer = require('net').createServer(aedes.handle);
         const mqttPort = 1884;
     
@@ -75,95 +71,85 @@ const { DB_URI, DB_NAME } = process.env;
             }
         }); */
 
-    // new lines for subserver setup
-    const subscriptionServer = SubscriptionServer.create(
-        {
-            schema,
-            execute,
-            subscribe,
+  // new lines for subserver setup
+  const subscriptionServer = SubscriptionServer.create(
+    {
+      schema,
+      execute,
+      subscribe,
 
-            onConnect: (connectionParams, webSocket, context) => {
-                webSocket.on("close", () => { });  // this will excute when user dissconnect
+      onConnect: (connectionParams, webSocket, context) => {
+        webSocket.on("close", () => {}); // this will excute when user dissconnect
+      },
+    },
+    { server: httpServer, path: path }
+  );
+
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      {
+        async serverWillStart() {
+          return {
+            async frainServer() {
+              subscriptionServer.close();
             },
+          };
         },
-        { server: httpServer, path: path }
+      },
+    ],
+
+    context: ({ req }) => {
+      return {
+        req,
+      };
+    },
+  });
+
+  app.get("/", (req, res) => {
+    //console.log(req)
+    res.send("hello This is a test");
+  });
+
+  app.use(bodyParser.json());
+  app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
     );
+    if (req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+    next();
+  });
 
-    const server = new ApolloServer({
-        schema,
-        plugins: [
-            {
-                async serverWillStart() {
-                    return {
-                        async frainServer() {
-                            subscriptionServer.close();
-                        }
-                    }
-                }
-            }
-        ],
+  app.use(cors());
 
-        context: ({ req }) => {
+  app.post("/newdata", async (req, res) => {
+    const newData = req.body; // Accessing the JSON object from the request body
+    //  console.log("received ", newData); // Logging the received JSON object to the console
+    try {
+      let dataToPublish = JSON.stringify(newData);
 
-            return {
-                req,
+      await pubsub.publish("NEW_DATA", dataToPublish);
+      await saveReceivedData(dataToPublish); // Assuming saveReceivedData is an asynchronous function
+      console.log("Data saved successfully!");
+      res.send("Data saved successfully!");
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
 
-            };
-        },
+  await server.start();
 
+  server.applyMiddleware({ app, path, cors: corsConfig });
+  mongoose.connect(DB_URI, { useNewUrlParser: true });
 
-    });
-
-    app.get('/', (req, res) => {
-
-        //console.log(req)
-        res.send('hello This is a test');
-
-
-    });
-
-    app.use(bodyParser.json());
-    app.use((req, res, next) => {
-
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        if (req.method === 'OPTIONS') {
-            return res.sendStatus(200);
-        }
-        next();
-    })
-
-    app.use(cors())
-
-    app.post('/newdata', async (req, res) => {
-        const newData = req.body; // Accessing the JSON object from the request body
-        //  console.log("received ", newData); // Logging the received JSON object to the console
-        try {
-            let dataToPublish = JSON.stringify(newData)
-
-            await pubsub.publish("NEW_DATA", dataToPublish);
-            await saveReceivedData(dataToPublish); // Assuming saveReceivedData is an asynchronous function
-            console.log('Data saved successfully!');
-            res.send('Data saved successfully!');
-        } catch (error) {
-            console.error('Error:', error);
-            res.status(500).send('Internal Server Error');
-        }
-    });
-
-
-
-    await server.start();
-
-    server.applyMiddleware({ app, path, cors: corsConfig });
-    mongoose.connect(DB_URI, { useNewUrlParser: true })
-
-
-    const PORT = 5050;
-    httpServer.listen(PORT, () => {
-        console.log("HTTP server is running on port " + PORT);
-    })
-
-
+  const PORT = 5050;
+  httpServer.listen(PORT, () => {
+    console.log("HTTP server is running on port " + PORT);
+  });
 })();

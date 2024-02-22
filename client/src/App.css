@@ -125,10 +125,10 @@ textarea:focus {
   padding: 2rem 0;
   gap: 1rem;
   transform: translateY(-50%);
-  background-color: #4caf50a6;
+  background-color: #4caf4f4e;
   z-index: 5;
-  -webkit-backdrop-filter: blur(2.5px);
-  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   border-radius: 0 5px 5px 0;
 }
 .sidebar .logo {
@@ -173,6 +173,7 @@ textarea:focus {
   padding: 5px;
   color: black;
   background-color: transparent;
+  cursor: pointer;
 }
 .sidebar .sensors li.selected {
   background-color: #fff;
@@ -233,7 +234,7 @@ textarea:focus {
   bottom: 0;
   left: 30%;
   transform: translate(-5%, 100%);
-  background-color: #4caf4f49;
+  background-color: #4caf4f4e;
   z-index: 5;
   -webkit-backdrop-filter: blur(25px);
   backdrop-filter: blur(25px);

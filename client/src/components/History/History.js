@@ -14,6 +14,11 @@ import {
   BarChart,
   Cell,
 } from "recharts";
+import { useLazyQuery } from "@apollo/client";
+import {
+  GET_ALL_SENSSED_DATA,
+  GET_ALL_SENSSED_DATA_BY_DEVICE,
+} from "../../GraphQL/queries";
 import "./history.css";
 const accessToken =
   "pk.eyJ1Ijoic2VyaGFuZW91c3NhbWEiLCJhIjoiY2xyejZ0OTF0MXE4dTJqcGJ2cWdtbWlzMyJ9.C0wZ14hebIIQrApUkF6uQQ";
@@ -139,6 +144,33 @@ const lightData = [
 ];
 
 export default function History() {
+  const [sensorData, setSensorData] = useState([]);
+  // get data by device ID
+  const [
+    getAllSenssedDataByDevice,
+    { loading: isDLoading, data: DeviceResponseData, error: queryDeviceError },
+  ] = useLazyQuery(GET_ALL_SENSSED_DATA_BY_DEVICE); //  ADD new this will fetch all data by deviceID
+
+  // send the query
+  useEffect(() => {
+    getAllSenssedDataByDevice({ variables: { deviceId: "123" } }); // excute fetch data only for single device
+  }, []);
+
+  useEffect(() => {
+    if (!isDLoading) {
+      if (queryDeviceError) {
+        console.log(queryDeviceError);
+      }
+      if (DeviceResponseData) {
+        console.log(
+          "Recieved Data from single device ==> ",
+          DeviceResponseData?.GetAllSenssedDataByDevice.data
+        );
+        setSensorData(DeviceResponseData?.GetAllSenssedDataByDevice.data);
+      }
+    }
+  }, [isDLoading, DeviceResponseData, queryDeviceError]);
+
   return (
     <div className="history">
       <Header />
@@ -160,8 +192,8 @@ export default function History() {
               <Chart
                 chartType="area"
                 color="#ea4d26a6"
-                data={temperatureData}
-                dataKey="temperature"
+                data={sensorData}
+                dataKey="Temperature"
               />
             </div>
             <div className="stat">
@@ -169,8 +201,8 @@ export default function History() {
               <Chart
                 chartType="area"
                 color="#149DE0"
-                data={humidityData}
-                dataKey="humidity"
+                data={sensorData}
+                dataKey="Humidity"
               />
             </div>
             <div className="stat light">
@@ -178,8 +210,8 @@ export default function History() {
               <Chart
                 chartType="line"
                 color="#ccc"
-                data={gasData}
-                dataKey="gasConcentration"
+                data={sensorData}
+                dataKey="Gas"
               />
             </div>
             <div className="stat">
@@ -187,8 +219,8 @@ export default function History() {
               <Chart
                 chartType="area"
                 color="#fff"
-                data={airQualityData}
-                dataKey="aqi"
+                data={sensorData}
+                dataKey="Air"
               />
             </div>
             <div className="stat">
@@ -200,8 +232,8 @@ export default function History() {
               <Chart
                 chartType="line"
                 color="#fff"
-                data={lightData}
-                dataKey="lightIntensity"
+                data={sensorData}
+                dataKey="Light"
               />
             </div>
           </div>
@@ -290,7 +322,7 @@ function Chart({ chartType, color, data, dataKey }) {
   if (chartType == "line")
     return (
       <LineChart width={300} height={120} data={data}>
-        <XAxis dataKey="date" />
+        <XAxis dataKey="createdAt" />
         <YAxis />
         <Tooltip />
         <Line type="monotone" dataKey={dataKey} stroke={color} />
@@ -300,7 +332,7 @@ function Chart({ chartType, color, data, dataKey }) {
     return (
       <AreaChart width={300} height={120} data={data}>
         <Area type="monotone" dataKey={dataKey} stroke={color} fill={color} />
-        <XAxis dataKey="date" />
+        <XAxis dataKey="createdAt" />
         <YAxis />
         <Tooltip />
       </AreaChart>
@@ -323,4 +355,20 @@ function ChartPie({ data }) {
       </Bar>
     </BarChart>
   );
+}
+
+// get data form createdAt
+function getDate(time) {
+  const date = new Date(time);
+
+  // Extract individual date components
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Months are zero-based, so add 1
+  const day = date.getDate();
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  // Format the date string
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
