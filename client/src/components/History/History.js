@@ -146,6 +146,8 @@ const lightData = [
 
 export default function History() {
   const [sensorData, setSensorData] = useState([]);
+  const [filterDate, setFilterDate] = useState(getDate());
+  console.log(filterDate);
   let { id } = useParams();
   // get data by device ID
   const [
@@ -168,16 +170,32 @@ export default function History() {
           "Recieved Data from single device ==> ",
           DeviceResponseData?.GetAllSenssedDataByDevice.data
         );
-        setSensorData(DeviceResponseData?.GetAllSenssedDataByDevice.data);
+        let filteredData = filterDataByDate(
+          DeviceResponseData?.GetAllSenssedDataByDevice.data,
+          filterDate
+        );
+        setSensorData(filteredData);
       }
     }
-  }, [isDLoading, DeviceResponseData, queryDeviceError]);
+  }, [isDLoading, DeviceResponseData, queryDeviceError, filterDate]);
 
+  // handle filter date
+  function handleFilterDate(event) {
+    console.log(event.target.value);
+    setFilterDate(event.target.value);
+  }
   return (
     <div className="history">
       <Header id={id} />
       <div className="main">
         <div className="container">
+          <input
+            type="date"
+            id="dateInput"
+            name="dateInput"
+            onChange={handleFilterDate}
+            value={getDate()}
+          />
           <div className="map-and-fire">
             <Map />
             <div className="fire">
@@ -360,17 +378,24 @@ function ChartPie({ data }) {
 }
 
 // get data form createdAt
-function getDate(time) {
-  const date = new Date(time);
+function getDate() {
+  const date = new Date();
 
   // Extract individual date components
   const year = date.getFullYear();
-  const month = date.getMonth() + 1; // Months are zero-based, so add 1
+  const month =
+    date.getMonth() + 1 > 9 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1); // Months are zero-based, so add 1
   const day = date.getDate();
   const hours = date.getHours();
   const minutes = date.getMinutes();
   const seconds = date.getSeconds();
 
   // Format the date string
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  return `${year}-${month}-${day}`;
+}
+
+// Function to filter data by createdAt date
+function filterDataByDate(dataArray, filterDate) {
+  // Assuming createdAt is in ISO 8601 format
+  return dataArray.filter((item) => item.createdAt.slice(0, 10) === filterDate);
 }
