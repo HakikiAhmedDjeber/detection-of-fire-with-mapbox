@@ -41,39 +41,39 @@ const { DB_URI, DB_NAME } = process.env;
 
 
 
-    /*     // MQTT broker setup
-        const mqttServer = require('net').createServer(aedes.handle);
-        const mqttPort = 1884;
-    
-        // Listen for the 'client' event
-        aedes.on('client', (client) => {
-            console.log(`Client connected: ${client.id}`);
-        });
-    
-        // Start MQTT broker
-        mqttServer.listen(mqttPort, () => {
-            console.log(`MQTT broker started and listening on port ${mqttPort}`);
-        });
-    
-    
-        // Listen for the 'publish' event to capture publish events
-        aedes.on('publish', async (packet, client) => {
-    
-            const topic = packet.topic.toString();
-            const payload = packet.payload.toString('utf8');
-            const clientId = client ? client.id : null;
-    
-            try {
-                await pubsub.publish(topic, { payload });
-                console.log(`Client ${clientId} published to topic '${topic}' with payload: ${payload}`);
-                if (topic === "NEW_DATA") {
-                    saveReceivedData(payload)  /// save received data from device to database based on its topic 
-                }
-    
-            } catch (error) {
-                console.error('Error publishing message:', error);
+    // MQTT broker setup
+    const mqttServer = require('net').createServer(aedes.handle);
+    const mqttPort = 1884;
+
+    // Listen for the 'client' event
+    aedes.on('client', (client) => {
+        console.log(`Client connected: ${client.id}`);
+    });
+
+    // Start MQTT broker
+    mqttServer.listen(mqttPort, () => {
+        console.log(`MQTT broker started and listening on port ${mqttPort}`);
+    });
+
+
+    // Listen for the 'publish' event to capture publish events
+    aedes.on('publish', async (packet, client) => {
+
+        const topic = packet.topic.toString();
+        const payload = packet.payload.toString('utf8');
+        const clientId = client ? client.id : null;
+
+        try {
+            await pubsub.publish(topic, { payload });
+            console.log(`Client ${clientId} published to topic '${topic}' with payload: ${payload}`);
+            if (topic === "NEW_DATA") {
+                saveReceivedData(payload)  /// save received data from device to database based on its topic 
             }
-        }); */
+
+        } catch (error) {
+            console.error('Error publishing message:', error);
+        }
+    });
 
     // new lines for subserver setup
     const subscriptionServer = SubscriptionServer.create(
@@ -138,13 +138,13 @@ const { DB_URI, DB_NAME } = process.env;
 
     app.post('/newdata', async (req, res) => {
         const newData = req.body; // Accessing the JSON object from the request body
-        //  console.log("received ", newData); // Logging the received JSON object to the console
+        console.log("received ", newData); // Logging the received JSON object to the console
         try {
             let dataToPublish = JSON.stringify(newData)
 
             await pubsub.publish("NEW_DATA", dataToPublish);
             await saveReceivedData(dataToPublish); // Assuming saveReceivedData is an asynchronous function
-            // console.log('Data saved successfully!');
+            console.log('Data saved successfully!');
             res.send('Data saved successfully!');
         } catch (error) {
             console.error('Error:', error);
@@ -153,13 +153,20 @@ const { DB_URI, DB_NAME } = process.env;
     });
 
     app.get('/newdata2', async (req, res) => {
-        const id = req.query.id;
-        const name = req.query.name;
-        console.log("ID:", id);
-        console.log("Name:", name);
+        const temp = req.query.temp;
+        //const name = req.query.name;
+        console.log("temp:", temp);
+        //console.log("Name:", name);
         res.send('Data received successfully!');
     });
 
+    app.get('/gps', async (req, res) => {
+        const longitude = req.query.longitude;
+        const latitude = req.query.latitude;
+        console.log("longitude:", longitude);
+        console.log("latitude:", latitude);
+        res.send('Data received successfully!');
+    });
 
     await server.start();
 
