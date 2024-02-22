@@ -10,6 +10,7 @@ export default function Map({
   viewport,
   setViewport,
   handleChart,
+  onSensorId,
 }) {
   const map = useRef(null);
   const [sensorData, SetSensorData] = useState(null);
@@ -101,6 +102,8 @@ export default function Map({
                 lat={ele.lat}
                 handleChart={handleChart}
                 sensorData={sensorData}
+                onSensorId={onSensorId}
+                id={i}
                 key={i}
               />
             );

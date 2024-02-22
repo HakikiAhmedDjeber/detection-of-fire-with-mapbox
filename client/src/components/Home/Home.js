@@ -15,7 +15,12 @@ export default function Home() {
   const [regionName, setRegionName] = useState("");
   const [isChartOpen, setIsChartOpen] = useState(false);
   const { incomingData, loading, error } = useSubscriptionContext();
+  // set sensor id
+  const [sensorId, setSensorId] = useState(null);
 
+  function handleSensorId(id) {
+    setSensorId(id);
+  }
   const [
     getAllSenssedData,
     { loading: isLoading, data: responseData, error: queryError },
@@ -92,8 +97,13 @@ export default function Home() {
         viewport={viewport}
         setViewport={setViewport}
         handleChart={handleChartOpen}
+        onSensorId={handleSensorId}
       />
-      <Chart chartOpen={isChartOpen} handleChart={handleChartOpen} />
+      <Chart
+        chartOpen={isChartOpen}
+        handleChart={handleChartOpen}
+        sensorId={sensorId}
+      />
     </main>
   );
 }

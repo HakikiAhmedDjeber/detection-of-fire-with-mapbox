@@ -1,6 +1,13 @@
 import { useRef, useState } from "react";
 import { Marker, Popup } from "react-map-gl";
-export default function Point({ lng, lat, handleChart, sensorData }) {
+export default function Point({
+  lng,
+  lat,
+  handleChart,
+  sensorData,
+  id,
+  onSensorId,
+}) {
   const marker = useRef(null);
   const popup = useRef(<Popup />);
 
@@ -31,7 +38,11 @@ export default function Point({ lng, lat, handleChart, sensorData }) {
           onClose={() => setOpenPopup(false)}
         >
           {!sensorData ? (
-            <SensorPopup handleChart={handleChart} />
+            <SensorPopup
+              handleChart={handleChart}
+              id={id}
+              onSensorId={onSensorId}
+            />
           ) : (
             <SensorPopup
               lat={sensorData.location.latitude}
@@ -40,6 +51,8 @@ export default function Point({ lng, lat, handleChart, sensorData }) {
               gas={sensorData.data.Gas}
               hum={sensorData.data.Humidity}
               handleChart={handleChart}
+              id={id}
+              onSensorId={onSensorId}
             />
           )}
         </Popup>
@@ -55,6 +68,8 @@ function SensorPopup({
   gas = 0,
   hum = 0,
   handleChart,
+  id,
+  onSensorId,
 }) {
   return (
     <div className="popup">
@@ -82,7 +97,13 @@ function SensorPopup({
           <p>{hum}</p>
         </li>
       </ul>
-      <span className="showChart" onClick={() => handleChart()}>
+      <span
+        className="showChart"
+        onClick={() => {
+          handleChart();
+          onSensorId(id + 1);
+        }}
+      >
         show chart
       </span>
     </div>

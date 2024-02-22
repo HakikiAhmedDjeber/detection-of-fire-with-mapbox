@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import MapGl, { Marker, Popup, useMap } from "react-map-gl";
 import {
   AreaChart,
@@ -145,6 +146,7 @@ const lightData = [
 
 export default function History() {
   const [sensorData, setSensorData] = useState([]);
+  let { id } = useParams();
   // get data by device ID
   const [
     getAllSenssedDataByDevice,
@@ -173,7 +175,7 @@ export default function History() {
 
   return (
     <div className="history">
-      <Header />
+      <Header id={id} />
       <div className="main">
         <div className="container">
           <div className="map-and-fire">
@@ -182,7 +184,7 @@ export default function History() {
               <h2>Fires : </h2>
               <div className="info">
                 <p className="fires-time">2</p>
-                <img src="./fire.png" alt="fire" />
+                <img src="../fire.png" alt="fire" />
               </div>
             </div>
           </div>
@@ -243,7 +245,7 @@ export default function History() {
   );
 }
 
-function Header() {
+function Header({ id }) {
   const [lng, setLng] = useState(-0.41551);
   const [lat, setLat] = useState(35.20779);
   return (
@@ -251,7 +253,7 @@ function Header() {
       <div className="container">
         <h1>Fire Detection</h1>
         <ul>
-          <li className="sensor-name">sensor 1</li>
+          <li className="sensor-name">sensor {id}</li>
           <li>
             lat: {lat} | lng: {lng}{" "}
           </li>

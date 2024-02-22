@@ -3,18 +3,23 @@ import ReactDOM from "react-dom/client";
 import "mapbox-gl/dist/mapbox-gl.css";
 import App from "./App";
 
-// import 
-import { ApolloProvider, ApolloClient, InMemoryCache, split, HttpLink } from "@apollo/client";
-import { WebSocketLink } from '@apollo/client/link/ws';
-import { getMainDefinition } from '@apollo/client/utilities';
-import { SubscriptionClient } from 'subscriptions-transport-ws';
+// import
+import {
+  ApolloProvider,
+  ApolloClient,
+  InMemoryCache,
+  split,
+  HttpLink,
+} from "@apollo/client";
+import { WebSocketLink } from "@apollo/client/link/ws";
+import { getMainDefinition } from "@apollo/client/utilities";
+import { SubscriptionClient } from "subscriptions-transport-ws";
 import { SubscriptionProvider } from "./Context/SubscriptionContext";
 
-
-const serverLink = "127.0.0.1:5050/detector"
+const serverLink = "fireendpoint.astropiole.com/detector";
 const httpLink = new HttpLink({
-  uri: "http://" + serverLink,
-  credentials: 'same-origin',
+  uri: "https://" + serverLink,
+  credentials: "same-origin",
 });
 
 const wsLink = new WebSocketLink(
@@ -22,15 +27,18 @@ const wsLink = new WebSocketLink(
     reconnect: true,
     lazy: true,
     connectionParams: {
-      authToken: 'USER TOCKEN',
+      authToken: "USER TOCKEN",
     },
-  }),
+  })
 );
 
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
-    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription';
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
   },
   wsLink,
   httpLink
@@ -41,15 +49,12 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-
-
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <SubscriptionProvider>
         <App />
       </SubscriptionProvider>
-    </ApolloProvider  >
-
+    </ApolloProvider>
   </React.StrictMode>
 );

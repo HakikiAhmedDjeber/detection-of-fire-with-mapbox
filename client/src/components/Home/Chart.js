@@ -11,7 +11,7 @@ import {
   Legend,
 } from "recharts";
 import { Link } from "react-router-dom";
-export default function Chart({ chartOpen, handleChart }) {
+export default function Chart({ chartOpen, handleChart, sensorId }) {
   const [closeChart, setChartClose] = useState(false);
   const [data, setData] = useState([]);
 
@@ -55,7 +55,7 @@ export default function Chart({ chartOpen, handleChart }) {
         <Legend />
       </AreaChart>
       <div className="link">
-        <Link to="./history">see details</Link>
+        <Link to={`/history/${sensorId}`}>see details</Link>
       </div>
     </div>
   );
