@@ -11,6 +11,7 @@ export default function Map({
   setViewport,
   handleChart,
   onSensorId,
+  allSensors,
 }) {
   const map = useRef(null);
   const [sensorData, SetSensorData] = useState(null);
@@ -95,11 +96,11 @@ export default function Map({
           mapStyle="mapbox://styles/mapbox/outdoors-v12"
           onMove={(event) => handleViewportChange(event.viewState)}
         >
-          {markers.map((ele, i) => {
+          {allSensors.map((ele, i) => {
             return (
               <Point
-                lng={ele.lng}
-                lat={ele.lat}
+                lng={ele.location.longitude}
+                lat={ele.location.latitude}
                 handleChart={handleChart}
                 sensorData={sensorData}
                 onSensorId={onSensorId}

@@ -12,7 +12,7 @@ const sensors = [
 //     latitude: 35.20779,
 //   },
 // ];
-export default function Sidebar({ region, selectSensor }) {
+export default function Sidebar({ region, selectSensor, allSensors }) {
   const [time, setTime] = useState(clock());
   const [openSensor, SetOpenSensor] = useState([]);
   function clock() {
@@ -25,9 +25,13 @@ export default function Sidebar({ region, selectSensor }) {
   }
 
   // handle click sensor
-  function HandleClickSensor(coordinates) {
-    SetOpenSensor(coordinates);
-    selectSensor({ ...coordinates, zoom: 12 });
+  function HandleClickSensor(device) {
+    SetOpenSensor(device);
+    selectSensor({
+      latitude: device.location.latitude,
+      longitude: device.location.longitude,
+      zoom: 12,
+    });
   }
 
   useEffect(() => {
@@ -43,14 +47,14 @@ export default function Sidebar({ region, selectSensor }) {
       <p className="clock">{time}</p>
       <p className="region">{region}</p>
       <ul className="sensors">
-        {sensors.map((sensor, i) => {
+        {allSensors.map((sensor, i) => {
           return (
             <li
-              className={sensor === openSensor ? "selected" : ""}
+              className={sensor.id === openSensor.id ? "selected" : ""}
               onClick={() => HandleClickSensor(sensor)}
             >
               <img src="./sensor.png" width={20} />
-              <p>sensor {i + 1}</p>
+              <p>sensor {sensor.id}</p>
             </li>
           );
         })}

@@ -16,9 +16,9 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 import { SubscriptionProvider } from "./Context/SubscriptionContext";
 
-const serverLink = "fireendpoint.astropiole.com/detector";
+const serverLink = "localhost:5050/detector";
 const httpLink = new HttpLink({
-  uri: "https://" + serverLink,
+  uri: "http://" + serverLink,
   credentials: "same-origin",
 });
 

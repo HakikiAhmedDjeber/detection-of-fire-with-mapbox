@@ -15,6 +15,7 @@ export default function Home() {
   const [regionName, setRegionName] = useState("");
   const [isChartOpen, setIsChartOpen] = useState(false);
   const { incomingData, loading, error } = useSubscriptionContext();
+  const [allSensorsIds, setAllSensorsIds] = useState([]);
   // set sensor id
   const [sensorId, setSensorId] = useState(null);
 
@@ -43,6 +44,11 @@ export default function Home() {
       }
       if (responseData) {
         console.log("Recieved Data ==> ", responseData);
+        // get all sensors id
+        const allSensors = responseData.GetAll.map((ele) => {
+          return { id: ele.deviceID, location: ele.location };
+        });
+        setAllSensorsIds([...new Set(allSensors)]);
       }
     }
   }, [isLoading, responseData, queryError]);
@@ -89,7 +95,11 @@ export default function Home() {
 
   return (
     <main className="main">
-      <Sidebar region={regionName} selectSensor={handleViewport} />
+      <Sidebar
+        region={regionName}
+        selectSensor={handleViewport}
+        allSensors={allSensorsIds}
+      />
       <Map
         sensorData={JSON.parse(SensorData)}
         regionName={regionName}
@@ -98,6 +108,7 @@ export default function Home() {
         setViewport={setViewport}
         handleChart={handleChartOpen}
         onSensorId={handleSensorId}
+        allSensors={allSensorsIds}
       />
       <Chart
         chartOpen={isChartOpen}
