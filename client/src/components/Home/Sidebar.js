@@ -28,8 +28,8 @@ export default function Sidebar({ region, selectSensor, allSensors }) {
   function HandleClickSensor(device) {
     SetOpenSensor(device);
     selectSensor({
-      latitude: device.location.latitude,
-      longitude: device.location.longitude,
+      latitude: device?.location.latitude || 0,
+      longitude: device?.location.longitude || 0,
       zoom: 12,
     });
   }
@@ -46,6 +46,7 @@ export default function Sidebar({ region, selectSensor, allSensors }) {
       <h2 className="logo">Fire Detection</h2>
       <p className="clock">{time}</p>
       <p className="region">{region}</p>
+      <h2 className="on-sensors">Active Sensors</h2>
       <ul className="sensors">
         {allSensors.map((sensor, i) => {
           return (
@@ -58,6 +59,13 @@ export default function Sidebar({ region, selectSensor, allSensors }) {
             </li>
           );
         })}
+      </ul>
+      <h2 className="on-sensors">Off Sensors</h2>
+      <ul className="sensors">
+        <li>
+          <img src="./sensor.png" width={20} />
+          <p>sensor 2</p>
+        </li>
       </ul>
     </div>
   );

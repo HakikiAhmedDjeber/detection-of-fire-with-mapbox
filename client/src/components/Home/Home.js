@@ -44,11 +44,12 @@ export default function Home() {
       }
       if (responseData) {
         console.log("Recieved Data ==> ", responseData);
-        // get all sensors id
-        const allSensors = responseData.GetAll.map((ele) => {
-          return { id: ele.deviceID, location: ele.location };
-        });
-        setAllSensorsIds([...new Set(allSensors)]);
+        // Get all sensor IDs
+        const allSensors = responseData.GetAll.map((ele) => ({
+          id: ele.deviceID,
+          location: ele.location,
+        }));
+        setAllSensorsIds(uniqueById(allSensors));
       }
     }
   }, [isLoading, responseData, queryError]);
@@ -118,3 +119,15 @@ export default function Home() {
     </main>
   );
 }
+
+// Define a custom comparison function based on the id property
+const uniqueById = (array) => {
+  const seen = new Set();
+  return array.filter((obj) => {
+    if (!seen.has(obj.id)) {
+      seen.add(obj.id);
+      return true;
+    }
+    return false;
+  });
+};

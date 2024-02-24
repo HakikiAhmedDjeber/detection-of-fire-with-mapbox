@@ -101,7 +101,7 @@ textarea:focus {
 }
 /* end map */
 /* start header */
-.header {
+/* .header {
   background-color: var(--main-green-color);
   display: flex;
   align-items: center;
@@ -110,7 +110,7 @@ textarea:focus {
 .header .container {
   width: 100%;
   padding: 0 2rem;
-}
+} */
 
 /* end header */
 /* start sidebar */
@@ -153,6 +153,7 @@ textarea:focus {
   color: white;
   text-align: center;
   padding: 5px;
+  margin-bottom: 1rem;
 }
 .sidebar .sensors {
   display: flex;
@@ -185,6 +186,15 @@ textarea:focus {
 .sidebar .sensors li p {
   font-size: 1.5rem;
   font-weight: bold;
+}
+.sidebar .on-sensors {
+  width: 100%;
+  background-color: white;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--main-green-color);
+  text-align: center;
+  padding: 5px;
 }
 /* end sidebar */
 /* start popup */
@@ -224,6 +234,20 @@ textarea:focus {
   color: #4caf50;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.fire-popup .mapboxgl-popup-content {
+  background-color: white;
+  animation: fireAnimation 1s infinite alternate; /* Apply the animation */
+}
+
+@keyframes fireAnimation {
+  0% {
+    background-color: white; /* Start with white */
+  }
+  100% {
+    background-color: #f4433678; /* End with red */
+  }
 }
 /* end popup */
 /* start chart */

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
-import MapGl, { useMap } from "react-map-gl";
+import MapGl, { Layer, Feature } from "react-map-gl";
 import axios from "axios";
 import Point from "./Point";
 const accessToken =
@@ -14,7 +14,7 @@ export default function Map({
   allSensors,
 }) {
   const map = useRef(null);
-  const [sensorData, SetSensorData] = useState(null);
+  const [sensorData, SetSensorData] = useState([null, null]);
   const [lng, setLng] = useState(-0.41551);
   const [lat, setLat] = useState(35.20779);
   const [zoom, setZoom] = useState(9);
@@ -64,20 +64,36 @@ export default function Map({
 
   useEffect(() => {
     setInterval(() => {
-      SetSensorData({
-        id: "123",
-        location: {
-          longitude: -0.41551,
-          latitude: 35.20779,
+      SetSensorData([
+        {
+          id: "1",
+          location: {
+            longitude: -0.41551,
+            latitude: 35.20779,
+          },
+          data: {
+            Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
+            Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
+            Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
+            Fire: 1,
+            Light: 240,
+          },
         },
-        data: {
-          Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
-          Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
-          Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
-          Fire: 0,
-          Light: 240,
+        {
+          id: "3",
+          location: {
+            longitude: -0.41551,
+            latitude: 35.20779,
+          },
+          data: {
+            Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
+            Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
+            Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
+            Fire: 0,
+            Light: 240,
+          },
         },
-      });
+      ]);
     }, 5000);
   }, []);
 
@@ -102,9 +118,9 @@ export default function Map({
                 lng={ele.location.longitude}
                 lat={ele.location.latitude}
                 handleChart={handleChart}
-                sensorData={sensorData}
+                sensorData={sensorData[i]}
                 onSensorId={onSensorId}
-                id={i}
+                id={sensorData[i]}
                 key={i}
               />
             );

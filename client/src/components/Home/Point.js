@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Marker, Popup } from "react-map-gl";
+import Sound from "react-sound";
 export default function Point({
   lng,
   lat,
@@ -26,10 +27,27 @@ export default function Point({
       offsetTop={-10}
       onClick={handleClick}
     >
-      <img src="./sensor.png" width={30} height={30} />
+      {sensorData ? (
+        sensorData.data.Fire == 1 ? (
+          <>
+            <img
+              src="./fire.png"
+              width={30}
+              height={30}
+              className="fire-icon"
+            />
+            <SoundPlayer />
+          </>
+        ) : (
+          <img src="./sensor.png" width={30} height={30} />
+        )
+      ) : (
+        <img src="./sensor.png" width={30} height={30} />
+      )}
 
       {openPopup && (
         <Popup
+          className={`${sensorData?.data.Fire == 1 ? "fire-popup" : ""}`}
           ref={popup}
           latitude={lat}
           longitude={lng}
@@ -50,6 +68,7 @@ export default function Point({
               temp={sensorData.data.Temperature}
               gas={sensorData.data.Gas}
               hum={sensorData.data.Humidity}
+              fire={sensorData.data.Fire}
               handleChart={handleChart}
               id={id}
               onSensorId={onSensorId}
@@ -67,12 +86,13 @@ function SensorPopup({
   temp = 0,
   gas = 0,
   hum = 0,
+  fire = 0,
   handleChart,
   id,
   onSensorId,
 }) {
   return (
-    <div className="popup">
+    <div className={`popup ${fire ? "fire" : ""}`}>
       <div className="location">
         <span id="lat">
           <b>Lat : </b>
@@ -101,7 +121,7 @@ function SensorPopup({
         className="showChart"
         onClick={() => {
           handleChart();
-          onSensorId(id + 1);
+          onSensorId(+id.id);
         }}
       >
         show chart
@@ -109,3 +129,55 @@ function SensorPopup({
     </div>
   );
 }
+
+// const SoundPlayer = () => {
+//   const [isPlaying, setIsPlaying] = useState(true);
+
+//   // const togglePlay = () => {
+//   //   setIsPlaying(!isPlaying);
+//   // };
+
+//   return (
+//     <div>
+//       <Sound
+//         url="./fire.mp3"
+//         autoLoad={true} // Enable auto-loading
+//         playStatus={isPlaying ? Sound.status.PLAYING : Sound.status.PAUSED}
+//         loop={true} // Enable looping
+//         onFinishedPlaying={() => setIsPlaying(false)}
+//       />
+//     </div>
+//   );
+// };
+
+const SoundPlayer = () => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    // Function to handle automatic playback
+    const handleAutoPlay = () => {
+      setIsPlaying(true);
+      document.removeEventListener("click", handleAutoPlay);
+    };
+
+    // Add event listener for user interaction (click)
+    document.addEventListener("click", handleAutoPlay);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      document.removeEventListener("click", handleAutoPlay);
+    };
+  }, []); // Empty dependency array to ensure this effect runs only once
+
+  return (
+    <div>
+      <Sound
+        url="./fire.mp3"
+        autoLoad={true}
+        loop={true}
+        playStatus={isPlaying ? Sound.status.PLAYING : Sound.status.PAUSED}
+        onFinishedPlaying={() => setIsPlaying(false)}
+      />
+    </div>
+  );
+};

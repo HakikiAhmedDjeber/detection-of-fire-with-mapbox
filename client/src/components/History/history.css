@@ -6,7 +6,9 @@
 /* start header */
 .history header {
   width: 100vw;
-  background: var(--main-green-color);
+  background-color: #4caf4fde;
+  box-shadow: 5px 0px 2px 5px rgba(0, 0, 0, 0.079);
+  padding: 0.5rem 0;
 }
 .history header .container {
   display: flex;
@@ -14,6 +16,7 @@
   align-items: center;
 }
 .history header h1 {
+  color: white;
 }
 .history header ul {
   font-size: 1.5rem;
@@ -21,19 +24,20 @@
   gap: 5px;
 }
 .history header li {
-  background-color: rgba(255, 255, 255, 0.507);
+  background-color: white;
   padding: 5px;
   border-radius: 2px;
+  color: var(--main-green-color);
 }
 .history header .sensor-name {
   text-transform: uppercase;
-  color: white;
+  color: var(--main-green-color);
   font-weight: bold;
 }
 /* end header */
 /* start main */
 .history .main {
-  background-color: #4caf50a6;
+  background-color: #f6f6f6;
 }
 .history .main .container {
   display: flex;
@@ -45,12 +49,13 @@
 .history .map-and-fire {
   display: flex;
   gap: 2rem;
-  height: 200px;
+  height: 25vh;
 }
 .history .map-and-fire .map {
   display: flex;
   width: 69.5%;
-  background-color: var(--main-blue-color);
+  background-color: var(--main-green-color);
+  box-shadow: 0px 0px 20px 0.5px rgba(0, 0, 0, 0.079);
   border-radius: 3px;
   overflow: hidden;
 }
@@ -95,7 +100,8 @@
 }
 .history .map-and-fire .fire {
   width: 30.5%;
-  background-color: rgba(255, 255, 255, 0.507);
+  background-color: white;
+  box-shadow: 0px 0px 20px 0.5px rgba(0, 0, 0, 0.079);
   border-radius: 3px;
   padding: 1rem;
 }
@@ -114,7 +120,7 @@
 .history .fire .info p {
   font-size: 4rem;
   font-weight: bold;
-  color: white;
+  color: black;
 }
 .history .fire .info img {
   width: 4rem;
@@ -130,14 +136,16 @@
 .history .stat {
   display: flex;
   flex-direction: column;
-  height: 16rem;
+  height: 25vh;
   width: 30%;
-  background-color: var(--main-green-color);
+  background-color: white;
+  box-shadow: 0px 0px 20px 0.5px rgba(0, 0, 0, 0.079);
   border-radius: 3px;
   padding: 2px;
 }
 .history .stat h1 {
   font-size: 1.5rem;
+  color: var(--main-green-color);
   width: 100%;
   text-align: center;
 }
@@ -147,3 +155,16 @@
 
 /* start charts */
 /* end main */
+.fire-icon {
+  opacity: 1;
+  animation: fireIcon 1s infinite alternate; /* Apply the Icon */
+}
+
+@keyframes fireIcon {
+  0% {
+    opacity: 1; /* Start with white */
+  }
+  100% {
+    opacity: 0.6; /* End with red */
+  }
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import MapGl, { Marker, Popup, useMap } from "react-map-gl";
 import {
   AreaChart,
@@ -117,8 +117,8 @@ const airQualityData = [
 ];
 
 const fireData = [
-  { label: "Fire", value: 2 },
-  { label: "No-fire", value: 18 },
+  { label: "Fire", value: 1 },
+  { label: "No-fire", value: 19 },
 ];
 
 const lightData = [
@@ -157,7 +157,8 @@ export default function History() {
 
   // send the query
   useEffect(() => {
-    getAllSenssedDataByDevice({ variables: { deviceId: "123" } }); // excute fetch data only for single device
+    console.log(id);
+    getAllSenssedDataByDevice({ variables: { deviceId: id } }); // excute fetch data only for single device
   }, []);
 
   useEffect(() => {
@@ -189,19 +190,13 @@ export default function History() {
       <Header id={id} />
       <div className="main">
         <div className="container">
-          <input
-            type="date"
-            id="dateInput"
-            name="dateInput"
-            onChange={handleFilterDate}
-            value={getDate()}
-          />
+          <Filter handleFilterDate={handleFilterDate} filterDate={filterDate} />
           <div className="map-and-fire">
             <Map />
             <div className="fire">
               <h2>Fires : </h2>
               <div className="info">
-                <p className="fires-time">2</p>
+                <p className="fires-time">1</p>
                 <img src="../fire.png" alt="fire" />
               </div>
             </div>
@@ -238,7 +233,7 @@ export default function History() {
               <h1> Air</h1>
               <Chart
                 chartType="area"
-                color="#fff"
+                color="#f0f0a0"
                 data={sensorData}
                 dataKey="Air"
               />
@@ -251,7 +246,7 @@ export default function History() {
               <h1>Light</h1>
               <Chart
                 chartType="line"
-                color="#fff"
+                color="#f0f020"
                 data={sensorData}
                 dataKey="Light"
               />
@@ -269,7 +264,9 @@ function Header({ id }) {
   return (
     <header>
       <div className="container">
-        <h1>Fire Detection</h1>
+        <Link to="/">
+          <h1>Fire Detection</h1>
+        </Link>
         <ul>
           <li className="sensor-name">sensor {id}</li>
           <li>
@@ -280,7 +277,7 @@ function Header({ id }) {
     </header>
   );
 }
-
+// map components
 function Map() {
   const [viewport, setViewport] = useState({
     longitude: -0.41551,
@@ -377,6 +374,21 @@ function ChartPie({ data }) {
   );
 }
 
+function Filter({ handleFilterDate, filterDate }) {
+  return (
+    <div>
+      <input
+        style={{ float: "right" }}
+        type="date"
+        id="dateInput"
+        name="dateInput"
+        onChange={handleFilterDate}
+        value={filterDate}
+      />
+    </div>
+  );
+}
+
 // get data form createdAt
 function getDate() {
   const date = new Date();
@@ -385,7 +397,7 @@ function getDate() {
   const year = date.getFullYear();
   const month =
     date.getMonth() + 1 > 9 ? date.getMonth() + 1 : "0" + (date.getMonth() + 1); // Months are zero-based, so add 1
-  const day = date.getDate();
+  const day = date.getDate() > 9 ? date.getDate() : "0" + date.getDate();
   const hours = date.getHours();
   const minutes = date.getMinutes();
   const seconds = date.getSeconds();
@@ -397,5 +409,19 @@ function getDate() {
 // Function to filter data by createdAt date
 function filterDataByDate(dataArray, filterDate) {
   // Assuming createdAt is in ISO 8601 format
-  return dataArray.filter((item) => item.createdAt.slice(0, 10) === filterDate);
+  const oneDayMilliseconds = 86500000;
+  return dataArray.filter((item) => item.createdAt > dateToTime(filterDate));
+}
+
+// function form date to time
+function dateToTime(dateString) {
+  const parts = dateString.split("-");
+
+  // Extract year, month, and day from the parts array
+  const year = parseInt(parts[0]);
+  const month = parseInt(parts[1]) - 1; // Months are 0-indexed
+  const day = parseInt(parts[2]);
+
+  // Create the Date object
+  return new Date(year, month, day).getTime();
 }
