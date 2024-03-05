@@ -11,31 +11,51 @@ import {
   Legend,
 } from "recharts";
 import { Link } from "react-router-dom";
-export default function Chart({ chartOpen, handleChart }) {
+export default function Chart({
+  chartOpen,
+  handleChart,
+  sensorId,
+  sensorData,
+}) {
   const [closeChart, setChartClose] = useState(false);
   const [data, setData] = useState([]);
 
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     // Generate random temperature between 19 and 22
+  //     const newTemperature = Math.floor(Math.random() * 4) + 19;
+  //     // Get current time
+  //     const now = new Date();
+  //     // Format time as "HH:MM:SS"
+  //     const time = `${String(now.getHours()).padStart(2, "0")}:${String(
+  //       now.getMinutes()
+  //     ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+
+  //     // Update data with new temperature and time
+  //     setData((prevData) => [
+  //       ...prevData,
+  //       { time, temperature: newTemperature },
+  //     ]);
+  //   }, 5000); // Every 5 seconds
+
+  //   // Clean up interval on component unmount
+  //   return () => clearInterval(interval);
+  // }, []); // Run effect only once on mount
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Generate random temperature between 19 and 22
-      const newTemperature = Math.floor(Math.random() * 4) + 19;
-      // Get current time
-      const now = new Date();
-      // Format time as "HH:MM:SS"
-      const time = `${String(now.getHours()).padStart(2, "0")}:${String(
-        now.getMinutes()
-      ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+    // Generate random temperature between 19 and 22
+    const newTemperature =
+      sensorData?.data?.Temperature || Math.floor(Math.random() * 4) + 19;
+    // Get current time
+    const now = new Date();
+    // Format time as "HH:MM:SS"
+    const time = `${String(now.getHours()).padStart(2, "0")}:${String(
+      now.getMinutes()
+    ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
 
-      // Update data with new temperature and time
-      setData((prevData) => [
-        ...prevData,
-        { time, temperature: newTemperature },
-      ]);
-    }, 5000); // Every 5 seconds
+    // Update data with new temperature and time
+    setData((prevData) => [...prevData, { time, temperature: newTemperature }]);
+  }, [sensorData]); // Run effect only once on mount
 
-    // Clean up interval on component unmount
-    return () => clearInterval(interval);
-  }, []); // Run effect only once on mount
   return (
     <div className={`chart ${chartOpen ? "chartUp" : ""}`}>
       <div className="chartClose" onClick={() => handleChart()}>
@@ -55,7 +75,7 @@ export default function Chart({ chartOpen, handleChart }) {
         <Legend />
       </AreaChart>
       <div className="link">
-        <Link to="./history">see details</Link>
+        <Link to={`/history/${sensorId}`}>see details</Link>
       </div>
     </div>
   );

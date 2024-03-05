@@ -10,7 +10,7 @@ export default function App() {
       <Router>
         <Routes>
           <Route exact path="/" element={<Home />} />
-          <Route path="/history" element={<History />} />
+          <Route path="/history/:id" element={<History />} />
         </Routes>
       </Router>
     </div>

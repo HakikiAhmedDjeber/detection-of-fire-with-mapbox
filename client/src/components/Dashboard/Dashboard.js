@@ -20,7 +20,7 @@ import {
   GET_ALL_SENSSED_DATA,
   GET_ALL_SENSSED_DATA_BY_DEVICE,
 } from "../../GraphQL/queries";
-import "./history.css";
+import "./dashboard.css";
 const accessToken =
   "pk.eyJ1Ijoic2VyaGFuZW91c3NhbWEiLCJhIjoiY2xyejZ0OTF0MXE4dTJqcGJ2cWdtbWlzMyJ9.C0wZ14hebIIQrApUkF6uQQ";
 

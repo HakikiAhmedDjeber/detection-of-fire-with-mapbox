@@ -1,8 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
-import MapGl from "react-map-gl";
+import MapGl, { Layer, Feature } from "react-map-gl";
 import axios from "axios";
 import Point from "./Point";
-
 const accessToken =
   "pk.eyJ1Ijoic2VyaGFuZW91c3NhbWEiLCJhIjoiY2xyejZ0OTF0MXE4dTJqcGJ2cWdtbWlzMyJ9.C0wZ14hebIIQrApUkF6uQQ";
 
@@ -11,8 +10,12 @@ export default function Map({
   viewport,
   setViewport,
   handleChart,
+  onSensorId,
+  allSensors,
+  incomingData,
 }) {
-  const [sensorData, SetSensorData] = useState(null);
+  const map = useRef(null);
+  const [sensorData, SetSensorData] = useState([null, null]);
   const [lng, setLng] = useState(-0.41551);
   const [lat, setLat] = useState(35.20779);
   const [zoom, setZoom] = useState(9);
@@ -62,43 +65,64 @@ export default function Map({
 
   useEffect(() => {
     setInterval(() => {
-      SetSensorData({
-        id: "123",
-        location: {
-          longitude: -0.41551,
-          latitude: 35.20779,
+      SetSensorData([
+        {
+          id: "1",
+          location: {
+            longitude: -0.41551,
+            latitude: 35.20779,
+          },
+          data: {
+            Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
+            Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
+            Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
+            Fire: 1,
+            Light: 240,
+          },
         },
-        data: {
-          Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
-          Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
-          Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
-          Fire: 0,
-          Light: 240,
+        {
+          id: "3",
+          location: {
+            longitude: -0.41551,
+            latitude: 35.20779,
+          },
+          data: {
+            Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
+            Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
+            Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
+            Fire: 0,
+            Light: 240,
+          },
         },
-      });
+      ]);
     }, 5000);
   }, []);
+
   return (
     <div className="map">
       <div className="map-info">
         Longitude: {viewport.longitude} | Latitude: {viewport.latitude} | Zoom:{" "}
         {viewport.zoom}
+        {/* <NavigateButton setViewport={setViewport} /> */}
       </div>
       <div className="map-container">
         <MapGl
-          id="myMap"
+          ref={map}
           mapboxAccessToken={accessToken}
-          initialViewState={viewport}
+          viewState={viewport}
           mapStyle="mapbox://styles/mapbox/outdoors-v12"
           onMove={(event) => handleViewportChange(event.viewState)}
         >
-          {markers.map((ele, i) => {
+          {allSensors.map((ele, i) => {
             return (
               <Point
-                lng={ele.lng}
-                lat={ele.lat}
+                linkId={ele.id}
+                lng={ele.location.longitude}
+                lat={ele.location.latitude}
                 handleChart={handleChart}
-                sensorData={sensorData}
+                sensorData={incomingData}
+                onSensorId={onSensorId}
+                id={incomingData}
                 key={i}
               />
             );
@@ -109,55 +133,16 @@ export default function Map({
   );
 }
 
-// use effect with mapbox-gl
-// useEffect(() => {
-//   if (!map.current) {
-//     map.current = new mapboxgl.Map({
-//       container: mapContainer.current,
-//       style: "mapbox://styles/mapbox/streets-v12",
-//       center: [lng, lat],
-//       zoom: zoom,
-//     });
+// function NavigateButton({ setViewport }) {
+//   // change the viewport data
+//   const handleViewportChange = () => {
+//     setViewport({ longitude: 42, latitude: 20, zoom: 9 });
+//   };
+//   const { current: map } = useMap();
 
-//     map.current.on("move", () => {
-//       setLng(map.current.getCenter()?.lng.toFixed(6));
-//       setLat(map.current.getCenter()?.lat.toFixed(6));
-//       setZoom(map.current.getZoom()?.toFixed(2));
-//     });
+//   const onClick = () => {
+//     handleViewportChange();
+//   };
 
-//     map.current.addControl(new mapboxgl.NavigationControl(), "top-right");
-//   }
-
-//   if (sensorData && sensorData.location) {
-//     const {
-//       location: { longitude, latitude } = {},
-//       data: { Temperature, Gas, Air } = {},
-//     } = sensorData;
-
-//     if (!marker.current) {
-//       const customMarker = document.createElement("div");
-//       customMarker.className = "custom-marker";
-//       customMarker.style.backgroundImage = "url('/sensor.png')";
-//       // customMarker.style.backgroundColor = "#000";
-//       customMarker.style.width = "30px";
-//       customMarker.style.height = "30px";
-//       customMarker.style.backgroundSize = "100%";
-
-//       marker.current = new mapboxgl.Marker({
-//         element: customMarker,
-//         draggable: true,
-//       })
-//         .setLngLat([longitude, latitude])
-//         .setPopup(popup.current)
-//         .addTo(map.current);
-//     }
-
-//     marker.current.setLngLat([longitude, latitude]);
-
-//     popup.current.setHTML(
-//       isSensorOpen
-//         ? sensorPopup(longitude, latitude, Temperature, Gas, Air)
-//         : `<div>sensor is off</div>`
-//     );
-//   }
-// }, [sensorData]);
+//   return <button onClick={onClick}>Go</button>;
+// }

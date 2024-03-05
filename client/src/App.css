@@ -101,7 +101,7 @@ textarea:focus {
 }
 /* end map */
 /* start header */
-.header {
+/* .header {
   background-color: var(--main-green-color);
   display: flex;
   align-items: center;
@@ -110,7 +110,7 @@ textarea:focus {
 .header .container {
   width: 100%;
   padding: 0 2rem;
-}
+} */
 
 /* end header */
 /* start sidebar */
@@ -125,10 +125,10 @@ textarea:focus {
   padding: 2rem 0;
   gap: 1rem;
   transform: translateY(-50%);
-  background-color: #4caf50a6;
+  background-color: #4caf4f4e;
   z-index: 5;
-  -webkit-backdrop-filter: blur(2.5px);
-  backdrop-filter: blur(2.5px);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   border-radius: 0 5px 5px 0;
 }
 .sidebar .logo {
@@ -153,6 +153,7 @@ textarea:focus {
   color: white;
   text-align: center;
   padding: 5px;
+  margin-bottom: 1rem;
 }
 .sidebar .sensors {
   display: flex;
@@ -173,6 +174,7 @@ textarea:focus {
   padding: 5px;
   color: black;
   background-color: transparent;
+  cursor: pointer;
 }
 .sidebar .sensors li.selected {
   background-color: #fff;
@@ -184,6 +186,15 @@ textarea:focus {
 .sidebar .sensors li p {
   font-size: 1.5rem;
   font-weight: bold;
+}
+.sidebar .on-sensors {
+  width: 100%;
+  background-color: white;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: var(--main-green-color);
+  text-align: center;
+  padding: 5px;
 }
 /* end sidebar */
 /* start popup */
@@ -224,6 +235,20 @@ textarea:focus {
   text-decoration: underline;
   cursor: pointer;
 }
+
+.fire-popup .mapboxgl-popup-content {
+  background-color: white;
+  animation: fireAnimation 1s infinite alternate; /* Apply the animation */
+}
+
+@keyframes fireAnimation {
+  0% {
+    background-color: white; /* Start with white */
+  }
+  100% {
+    background-color: #f4433678; /* End with red */
+  }
+}
 /* end popup */
 /* start chart */
 .chart {
@@ -233,7 +258,7 @@ textarea:focus {
   bottom: 0;
   left: 30%;
   transform: translate(-5%, 100%);
-  background-color: #4caf4f49;
+  background-color: #4caf4f4e;
   z-index: 5;
   -webkit-backdrop-filter: blur(25px);
   backdrop-filter: blur(25px);
