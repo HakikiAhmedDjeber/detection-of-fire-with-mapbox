@@ -6,7 +6,7 @@ exports.saveReceivedData = async (receivedData) => {
         const objectData = JSON.parse(receivedData);
         const { deviceID, location, data } = objectData;
 
-        console.log("======> received data:", objectData);
+        // console.log("======> received data:", objectData);
 
         // Find or create SenssedData by deviceID
         let sensedData = await SenssedData.findOne({ deviceID });

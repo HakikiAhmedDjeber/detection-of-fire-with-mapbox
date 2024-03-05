@@ -1,15 +1,15 @@
 const { gql } = require('apollo-server');
 
-
 module.exports = gql`
+scalar Date
 
             type SenssedData {
                 id: ID!
                 deviceID: String!
                 location: Location!
                 data: [Data!]!
-                createdAt: String!
-                updatedAt: String!
+                createdAt: Date!
+                updatedAt: Date!
             }
 
             type Location {
@@ -25,8 +25,8 @@ module.exports = gql`
                 Air: Float
                 Fire: Boolean
                 Light: Float
-                createdAt: String!
-                updatedAt: String!
+                createdAt: Date!
+                updatedAt: Date!
                 }
 
             type Query {

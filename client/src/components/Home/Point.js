@@ -7,11 +7,12 @@ export default function Point({
   handleChart,
   sensorData,
   id,
+  linkId,
   onSensorId,
 }) {
   const marker = useRef(null);
   const popup = useRef(<Popup />);
-
+  console.log("subscribtion", sensorData);
   const [openPopup, setOpenPopup] = useState(false);
 
   const handleClick = () => {
@@ -57,12 +58,14 @@ export default function Point({
         >
           {!sensorData ? (
             <SensorPopup
+              sensorId={linkId}
               handleChart={handleChart}
               id={id}
               onSensorId={onSensorId}
             />
           ) : (
             <SensorPopup
+              sensorId={linkId}
               lat={sensorData.location.latitude}
               lng={sensorData.location.longitude}
               temp={sensorData.data.Temperature}
@@ -90,6 +93,7 @@ function SensorPopup({
   handleChart,
   id,
   onSensorId,
+  sensorId,
 }) {
   return (
     <div className={`popup ${fire ? "fire" : ""}`}>
@@ -121,7 +125,7 @@ function SensorPopup({
         className="showChart"
         onClick={() => {
           handleChart();
-          onSensorId(+id.id);
+          onSensorId(sensorId);
         }}
       >
         show chart

@@ -12,6 +12,7 @@ export default function Map({
   handleChart,
   onSensorId,
   allSensors,
+  incomingData,
 }) {
   const map = useRef(null);
   const [sensorData, SetSensorData] = useState([null, null]);
@@ -115,12 +116,13 @@ export default function Map({
           {allSensors.map((ele, i) => {
             return (
               <Point
+                linkId={ele.id}
                 lng={ele.location.longitude}
                 lat={ele.location.latitude}
                 handleChart={handleChart}
-                sensorData={sensorData[i]}
+                sensorData={incomingData}
                 onSensorId={onSensorId}
-                id={sensorData[i]}
+                id={incomingData}
                 key={i}
               />
             );
