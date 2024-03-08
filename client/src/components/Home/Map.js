@@ -57,7 +57,7 @@ export default function Map({
   };
 
   const markers = [
-    { lat: lat, lng: lng },
+    { lat: 35.20779, lng: -0.41551 },
     { lat: 35.2078, lng: -0.405 },
     { lat: 35.2, lng: -0.4155 },
     { lat: 35.2, lng: -0.405 },

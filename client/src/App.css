@@ -265,6 +265,12 @@ textarea:focus {
   border-radius: 5px 5px 0 0;
   transition: transform 0.5s ease;
 }
+.chart .select {
+  padding: 1rem;
+  background-color: #0a11d84e;
+  border: none;
+  border-radius: 2px;
+}
 .chartClose {
   font-size: 2rem;
   float: right;

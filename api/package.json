@@ -24,6 +24,7 @@
     "jsonwebtoken": "^8.5.1",
     "lru-cache": "^10.2.0",
     "mime": "^4.0.1",
+    "moment": "^2.30.1",
     "mongoose": "^6.1.6",
     "mongoose-paginate-v2": "^1.5.0",
     "mqtt": "^5.3.5",

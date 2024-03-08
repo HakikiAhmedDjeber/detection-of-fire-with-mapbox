@@ -68,3 +68,32 @@ export const GET_ONLYIDs = gql`
     }
   }
 `;
+
+export const GET_ALL_DATA = gql`
+  query GetAll {
+    GetAll {
+      data {
+        Air
+        Fire
+        Gas
+        Humidity
+        Light
+        Temperature
+        createdAt
+      }
+    }
+  }
+`;
+
+export const GET_Average = gql`
+  query GetAll($secondsValue: Int) {
+    GetDataAverage(SecondsValue: $secondsValue) {
+      Count
+      TemperatureAvg
+      HumidityAvg
+      GasAvg
+      AirAvg
+      LightAvg
+    }
+  }
+`;

@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import MapGl, { Marker, Popup, useMap } from "react-map-gl";
+import MapGl, { Marker } from "react-map-gl";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+
 import {
   AreaChart,
   LineChart,
@@ -16,243 +19,112 @@ import {
   Cell,
 } from "recharts";
 import { useLazyQuery } from "@apollo/client";
-import {
-  GET_ALL_SENSSED_DATA,
-  GET_ALL_SENSSED_DATA_BY_DEVICE,
-} from "../../GraphQL/queries";
+import { GET_ALL_DATA, GET_ONLYIDs, GET_Average } from "../../GraphQL/queries";
 import "./dashboard.css";
 const accessToken =
   "pk.eyJ1Ijoic2VyaGFuZW91c3NhbWEiLCJhIjoiY2xyejZ0OTF0MXE4dTJqcGJ2cWdtbWlzMyJ9.C0wZ14hebIIQrApUkF6uQQ";
-
-const temperatureData = [
-  { date: "2024-01-22", temperature: 22.5 },
-  { date: "2024-01-23", temperature: 17 },
-  { date: "2024-01-24", temperature: 16 },
-  { date: "2024-01-25", temperature: 20 },
-  { date: "2024-01-26", temperature: 20 },
-  { date: "2024-01-27", temperature: 21 },
-  { date: "2024-01-28", temperature: 22 },
-  { date: "2024-01-29", temperature: 22 },
-  { date: "2024-01-30", temperature: 24 },
-  { date: "2024-01-31", temperature: 23 },
-  { date: "2024-02-01", temperature: 22 },
-  { date: "2024-02-02", temperature: 16 },
-  { date: "2024-02-03", temperature: 20 },
-  { date: "2024-02-04", temperature: 19 },
-  { date: "2024-02-05", temperature: 18 },
-  { date: "2024-02-06", temperature: 23 },
-  { date: "2024-02-07", temperature: 16 },
-  { date: "2024-02-08", temperature: 21 },
-  { date: "2024-02-09", temperature: 18 },
-  { date: "2024-02-10", temperature: 21 },
-];
-
-const humidityData = [
-  { date: "2024-01-22", humidity: 60 },
-  { date: "2024-01-23", humidity: 65 },
-  { date: "2024-01-24", humidity: 62 },
-  { date: "2024-01-25", humidity: 70 },
-  { date: "2024-01-26", humidity: 72 },
-  { date: "2024-01-27", humidity: 68 },
-  { date: "2024-01-28", humidity: 66 },
-  { date: "2024-01-29", humidity: 64 },
-  { date: "2024-01-30", humidity: 68 },
-  { date: "2024-01-31", humidity: 71 },
-  { date: "2024-02-01", humidity: 69 },
-  { date: "2024-02-02", humidity: 62 },
-  { date: "2024-02-03", humidity: 65 },
-  { date: "2024-02-04", humidity: 68 },
-  { date: "2024-02-05", humidity: 67 },
-  { date: "2024-02-06", humidity: 70 },
-  { date: "2024-02-07", humidity: 63 },
-  { date: "2024-02-08", humidity: 66 },
-  { date: "2024-02-09", humidity: 68 },
-  { date: "2024-02-10", humidity: 64 },
-];
-
-const gasData = [
-  { date: "2024-01-22", gasConcentration: 150 },
-  { date: "2024-01-23", gasConcentration: 160 },
-  { date: "2024-01-24", gasConcentration: 155 },
-  { date: "2024-01-25", gasConcentration: 170 },
-  { date: "2024-01-26", gasConcentration: 175 },
-  { date: "2024-01-27", gasConcentration: 165 },
-  { date: "2024-01-28", gasConcentration: 160 },
-  { date: "2024-01-29", gasConcentration: 155 },
-  { date: "2024-01-30", gasConcentration: 165 },
-  { date: "2024-01-31", gasConcentration: 170 },
-  { date: "2024-02-01", gasConcentration: 160 },
-  { date: "2024-02-02", gasConcentration: 155 },
-  { date: "2024-02-03", gasConcentration: 160 },
-  { date: "2024-02-04", gasConcentration: 165 },
-  { date: "2024-02-05", gasConcentration: 170 },
-  { date: "2024-02-06", gasConcentration: 175 },
-  { date: "2024-02-07", gasConcentration: 160 },
-  { date: "2024-02-08", gasConcentration: 165 },
-  { date: "2024-02-09", gasConcentration: 160 },
-  { date: "2024-02-10", gasConcentration: 155 },
-];
-
-const airQualityData = [
-  { date: "2024-01-22", aqi: 45 },
-  { date: "2024-01-23", aqi: 50 },
-  { date: "2024-01-24", aqi: 48 },
-  { date: "2024-01-25", aqi: 55 },
-  { date: "2024-01-26", aqi: 60 },
-  { date: "2024-01-27", aqi: 52 },
-  { date: "2024-01-28", aqi: 49 },
-  { date: "2024-01-29", aqi: 47 },
-  { date: "2024-01-30", aqi: 53 },
-  { date: "2024-01-31", aqi: 58 },
-  { date: "2024-02-01", aqi: 50 },
-  { date: "2024-02-02", aqi: 48 },
-  { date: "2024-02-03", aqi: 50 },
-  { date: "2024-02-04", aqi: 54 },
-  { date: "2024-02-05", aqi: 57 },
-  { date: "2024-02-06", aqi: 61 },
-  { date: "2024-02-07", aqi: 49 },
-  { date: "2024-02-08", aqi: 52 },
-  { date: "2024-02-09", aqi: 47 },
-  { date: "2024-02-10", aqi: 45 },
-];
 
 const fireData = [
   { label: "Fire", value: 1 },
   { label: "No-fire", value: 19 },
 ];
+let time = 10000000;
+const MySwal = withReactContent(Swal);
+export default function Dashboard() {
+  const [averageData, setAverageData] = useState([]);
+  const [allSensorsIds, setAllSensorsIds] = useState([]);
+  const [sensorsNb, setSensorNb] = useState(0);
 
-const lightData = [
-  { date: "2024-01-22", lightIntensity: 300 },
-  { date: "2024-01-23", lightIntensity: 280 },
-  { date: "2024-01-24", lightIntensity: 320 },
-  { date: "2024-01-25", lightIntensity: 290 },
-  { date: "2024-01-26", lightIntensity: 310 },
-  { date: "2024-01-27", lightIntensity: 330 },
-  { date: "2024-01-28", lightIntensity: 280 },
-  { date: "2024-01-29", lightIntensity: 310 },
-  { date: "2024-01-30", lightIntensity: 290 },
-  { date: "2024-01-31", lightIntensity: 300 },
-  { date: "2024-02-01", lightIntensity: 320 },
-  { date: "2024-02-02", lightIntensity: 330 },
-  { date: "2024-02-03", lightIntensity: 310 },
-  { date: "2024-02-04", lightIntensity: 280 },
-  { date: "2024-02-05", lightIntensity: 290 },
-  { date: "2024-02-06", lightIntensity: 300 },
-  { date: "2024-02-07", lightIntensity: 320 },
-  { date: "2024-02-08", lightIntensity: 310 },
-  { date: "2024-02-09", lightIntensity: 330 },
-  { date: "2024-02-10", lightIntensity: 300 },
-];
+  function handleAverageData(newData) {
+    setAverageData([...averageData, newData]);
+  }
 
-export default function History() {
-  const [sensorData, setSensorData] = useState([]);
-  const [filterDate, setFilterDate] = useState(getDate());
-  console.log(filterDate);
-  let { id } = useParams();
-  // get data by device ID
   const [
-    getAllSenssedDataByDevice,
-    { loading: isDLoading, data: DeviceResponseData, error: queryDeviceError },
-  ] = useLazyQuery(GET_ALL_SENSSED_DATA_BY_DEVICE); //  ADD new this will fetch all data by deviceID
-
-  // send the query
+    getAverage,
+    {
+      loading: isLoadingAverage,
+      data: responseAverageData,
+      error: queryErrorAverage,
+    },
+  ] = useLazyQuery(GET_Average);
   useEffect(() => {
-    console.log(id);
-    getAllSenssedDataByDevice({ variables: { deviceId: id } }); // excute fetch data only for single device
-  }, []);
-
-  useEffect(() => {
-    if (!isDLoading) {
-      if (queryDeviceError) {
-        console.log(queryDeviceError);
+    if (!isLoadingAverage) {
+      if (queryErrorAverage) {
+        console.log(queryErrorAverage);
       }
-      if (DeviceResponseData) {
+      if (responseAverageData) {
         console.log(
-          "Recieved Data from single device ==> ",
-          DeviceResponseData?.GetAllSenssedDataByDevice.data
+          "Recieved Data by time ==> ",
+          responseAverageData.GetDataAverage
         );
-        let filteredData = filterDataByDate(
-          DeviceResponseData?.GetAllSenssedDataByDevice.data,
-          filterDate
+        setSensorNb(responseAverageData?.GetDataAverage?.Count);
+        handleAverageData(responseAverageData.GetDataAverage);
+        console.log(
+          "data from use effect : ",
+          responseAverageData.GetDataAverage
         );
-        // setSensorData(filteredData);
-
-        setSensorData(DeviceResponseData?.GetAllSenssedDataByDevice.data);
       }
     }
-  }, [isDLoading, DeviceResponseData, queryDeviceError, filterDate]);
+  }, [isLoadingAverage, responseAverageData]);
+  //  ADD new this will fetch allll historic
+  // send the query
+  useEffect(() => {
+    // Schedule fetching every 5 seconds
+    const intervalId = setInterval(() => {
+      console.log("average data from interval", averageData);
+      getAverage({ variables: { secondsValue: 5000 } });
+    }, 5000);
 
-  // handle filter date
-  function handleFilterDate(event) {
-    console.log(event.target.value);
-    setFilterDate(event.target.value);
-  }
+    // Clean up interval on unmount
+    return () => clearInterval(intervalId);
+  }, []);
+  // useEffect(() => {
+
+  // }, [responseAverageData]);
+
   return (
-    <div className="history">
-      <Header id={id} />
+    <div className="main-dashboard">
+      <Header />
       <div className="main">
         <div className="container">
-          <Filter handleFilterDate={handleFilterDate} filterDate={filterDate} />
-          <div className="map-and-fire">
-            <Map />
-            <div className="fire">
-              <h2>Fires : </h2>
-              <div className="info">
-                <p className="fires-time">1</p>
-                <img src="../fire.png" alt="fire" />
+          <ul className="regions-sensors">
+            <Regions />
+            <li className="sensors">
+              <div className="sensors-nb">
+                <p className="regions-number">{sensorsNb}</p>
+                <h2>Sensors</h2>
               </div>
-            </div>
+              <div className="min">
+                <h2>Min</h2>
+                <span>-</span>
+              </div>
+              <div className="max">
+                <h2>Max</h2>
+                <span>-</span>
+              </div>
+            </li>
+          </ul>
+          <div className="map">
+            <Map />
           </div>
-          <div className="stats">
-            <div className="stat">
-              <h1>Temperature</h1>
-              <Chart
-                chartType="area"
-                color="#ea4d26a6"
-                data={sensorData}
-                dataKey="Temperature"
-              />
+          <DashChart sensorData={averageData} />
+          <div className="notifications">
+            <div className="header">
+              <h2>Notifications</h2>
+              <img src="./next.png" width={30} height={30} alt="next" />
             </div>
-            <div className="stat">
-              <h1>Humidity</h1>
-              <Chart
-                chartType="area"
-                color="#149DE0"
-                data={sensorData}
-                dataKey="Humidity"
-              />
-            </div>
-            <div className="stat light">
-              <h1>Gas</h1>
-              <Chart
-                chartType="line"
-                color="#ccc"
-                data={sensorData}
-                dataKey="Gas"
-              />
-            </div>
-            <div className="stat">
-              <h1> Air</h1>
-              <Chart
-                chartType="area"
-                color="#f0f0a0"
-                data={sensorData}
-                dataKey="Air"
-              />
-            </div>
-            <div className="stat">
-              <h1>Fire</h1>
-              <ChartPie data={fireData} />
-            </div>
-            <div className="stat light">
-              <h1>Light</h1>
-              <Chart
-                chartType="line"
-                color="#f0f020"
-                data={sensorData}
-                dataKey="Light"
-              />
-            </div>
+            <ul>
+              <li className="notification">
+                <img src="./fire.png" width={30} height={30} alt="fire" />
+                <p>10:22:25</p>
+                <p>sensor 2</p>
+              </li>
+              <li className="notification">
+                <img src="./fire.png" width={30} height={30} alt="fire" />
+                <p>10:22:25</p>
+                <p>sensor 1</p>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -260,23 +132,73 @@ export default function History() {
   );
 }
 
-function Header({ id }) {
-  const [lng, setLng] = useState(-0.41551);
-  const [lat, setLat] = useState(35.20779);
+function Header() {
+  const [time, setTime] = useState(clock());
+  function clock() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const seconds = now.getSeconds().toString().padStart(2, "0");
+
+    return `${hours}:${minutes}:${seconds}`;
+  }
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setTime(clock());
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []);
   return (
     <header>
       <div className="container">
         <Link to="/">
           <h1>Fire Detection</h1>
         </Link>
-        <ul>
+        <p className="clock">{time}</p>
+        {/* <ul>
           <li className="sensor-name">sensor {id}</li>
           <li>
             lat: {lat} | lng: {lng}{" "}
           </li>
-        </ul>
+        </ul> */}
       </div>
     </header>
+  );
+}
+// chart component
+function DashChart({ sensorData }) {
+  const [select, setSelect] = useState("TemperatureAvg");
+  function handleSelect(value) {
+    console.log("the value of select", value);
+    setSelect(value);
+  }
+  return (
+    <div className="dashboard-chart">
+      <div className="dashboard-stat">
+        <div className="header">
+          <h1>{select}</h1>
+          <select
+            className="select"
+            value={select}
+            onChange={(event) => handleSelect(event.target.value)}
+          >
+            <option value="TemperatureAvg">Temperature</option>
+            <option value="GasAvg">Gas</option>
+            <option value="HumidityAvg">Humidity</option>
+            <option value="AirAvg">Air</option>
+            <option value="LightAvg">Light</option>
+          </select>
+        </div>
+        <Chart
+          chartType="area"
+          color="#ea4d26a6"
+          data={sensorData}
+          dataKey={select}
+        />
+      </div>
+    </div>
   );
 }
 // map components
@@ -284,7 +206,7 @@ function Map() {
   const [viewport, setViewport] = useState({
     longitude: -0.41551,
     latitude: 35.20779,
-    zoom: 11,
+    zoom: 10,
   });
   const handleViewportChange = (newViewport) => {
     let { latitude, longitude, zoom } = newViewport;
@@ -295,84 +217,84 @@ function Map() {
     console.log({ latitude, longitude, zoom });
   };
   return (
-    <div className="map">
-      <div className="cont-map">
-        <MapGl
-          mapboxAccessToken={accessToken}
-          initialViewState={viewport}
-          mapStyle="mapbox://styles/mapbox/outdoors-v12"
-          onMove={(event) => handleViewportChange(event.viewState)}
-          interactive={false}
-        >
-          <Marker
-            longitude={-0.41551}
-            latitude={35.20779}
-            offsetLeft={-20}
-            offsetTop={-10}
-          >
-            <span className="sensor-position">1</span>
-          </Marker>
-          <Marker
-            longitude={-0.42}
-            latitude={35.2}
-            offsetLeft={-20}
-            offsetTop={-10}
-          >
-            <span className="sensor-position">2</span>
-          </Marker>
-        </MapGl>
-      </div>
-      <div className="details">
-        <h2>sensor postions</h2>
-        <ul>
-          <li className="position">
-            <span className="sensor-position">1</span> 02-02-2024 || 15-02-2024
-          </li>
-          <li className="position">
-            <span className="sensor-position">2</span> 15-02-2024 || now
-          </li>
-        </ul>
-      </div>
-    </div>
+    <MapGl
+      mapboxAccessToken={accessToken}
+      initialViewState={viewport}
+      mapStyle="mapbox://styles/mapbox/outdoors-v12"
+      onMove={(event) => handleViewportChange(event.viewState)}
+      interactive={false}
+    >
+      <Marker
+        longitude={-0.41551}
+        latitude={35.20779}
+        offsetLeft={-20}
+        offsetTop={-10}
+      >
+        <span className="sensor-position"></span>
+      </Marker>
+    </MapGl>
   );
 }
-
-function Chart({ chartType, color, data, dataKey }) {
-  if (chartType == "line")
-    return (
-      <LineChart width={300} height={120} data={data}>
-        <XAxis dataKey="createdAt" />
-        <YAxis />
-        <Tooltip />
-        <Line type="monotone" dataKey={dataKey} stroke={color} />
-      </LineChart>
-    );
-  else if (chartType == "area")
-    return (
-      <AreaChart width={300} height={120} data={data}>
-        <Area type="monotone" dataKey={dataKey} stroke={color} fill={color} />
-        <XAxis dataKey="createdAt" />
-        <YAxis />
-        <Tooltip />
-      </AreaChart>
-    );
-}
-
-function ChartPie({ data }) {
-  const COLORS = ["#ea4d26a6", "#149DE0"]; // Colors for true and false
-
+// Regions components
+function Regions() {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  function handlePopup() {
+    setIsPopupOpen(!isPopupOpen);
+    isPopupOpen &&
+      MySwal.fire({
+        title: <h1>Regions List :</h1>,
+        html: <RegionsList />,
+        showClass: {
+          popup: `
+            animate__animated
+            animate__fadeInUp
+            animate__faster
+          `,
+        },
+        hideClass: {
+          popup: `
+            animate__animated
+            animate__fadeOutDown
+            animate__faster
+          `,
+        },
+        confirmButtonText: "Go",
+      }).then(() => {
+        window.location.href = "/map";
+      });
+  }
   return (
-    <BarChart width={350} height={120} data={data}>
-      <CartesianGrid strokeDasharray="3 3" />
-      <XAxis dataKey="label" hide />
-      <YAxis hide />
+    <>
+      <li className="regions" onClick={handlePopup}>
+        <p className="regions-number">01</p>
+        <div className="title">
+          <img src="./location.png" width={30} height={30} alt="location" />
+          <h2>coverage regions</h2>
+        </div>
+        <img src="./next.png" width={30} height={30} alt="next" />
+      </li>
+    </>
+  );
+}
+function Chart({ chartType, color, data, dataKey }) {
+  return (
+    <AreaChart width={600} height={200} data={data}>
+      <Area
+        type="monotone"
+        dataKey={dataKey}
+        stroke="#8884d8"
+        fill="url(#colorUv)"
+      />
+      <defs>
+        <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+          <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+        </linearGradient>
+      </defs>
+      <XAxis dataKey="createdAt" />
+      <YAxis />
       <Tooltip />
-      <Bar dataKey="value" fill="#8884d8">
-        {data.map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Bar>
-    </BarChart>
+    </AreaChart>
   );
 }
 
@@ -408,13 +330,6 @@ function getDate() {
   return `${year}-${month}-${day}`;
 }
 
-// Function to filter data by createdAt date
-function filterDataByDate(dataArray, filterDate) {
-  // Assuming createdAt is in ISO 8601 format
-  const oneDayMilliseconds = 86500000;
-  return dataArray.filter((item) => item.createdAt > dateToTime(filterDate));
-}
-
 // function form date to time
 function dateToTime(dateString) {
   const parts = dateString.split("-");
@@ -427,3 +342,25 @@ function dateToTime(dateString) {
   // Create the Date object
   return new Date(year, month, day).getTime();
 }
+
+function RegionsList() {
+  return (
+    <ul>
+      <li>
+        <h1>region : sidi bel abbes</h1>
+      </li>
+    </ul>
+  );
+}
+
+// Define a custom comparison function based on the id property
+const uniqueById = (array) => {
+  const seen = new Set();
+  return array.filter((obj) => {
+    if (!seen.has(obj.id)) {
+      seen.add(obj.id);
+      return true;
+    }
+    return false;
+  });
+};
