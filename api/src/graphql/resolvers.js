@@ -85,46 +85,48 @@ module.exports = {
           .subtract(SecondsValue, "seconds")
           .toDate();
 
-        // Fetch SenssedData documents with 'createdAt' timestamp greater than or equal to fiveSecondsAgo and populate the 'data' field
+        // Fetch SenssedData documents with 'updatedAt' timestamp greater than or equal to fiveSecondsAgo and populate the 'data' field
         const allSenssedData = await SenssedData.find({
           updatedAt: { $gte: fiveSecondsAgo },
         }).populate("data");
-
+        let Count = allSenssedData.length;
         let sumTemperature = 0;
         let sumHumidity = 0;
         let sumGas = 0;
         let sumAir = 0;
         let sumLight = 0;
+        let numData = 0;
 
-        if (allSenssedData[0]?.data) {
-          let savedDataList = allSenssedData[0].data;
-          savedDataList.forEach((dataObj) => {
+        // Iterate through all SenssedData documents
+        allSenssedData?.forEach((sensorData) => {
+          // Iterate through each data object of a device
+          sensorData?.data?.forEach((dataObj) => {
             sumTemperature += dataObj.Temperature;
             sumHumidity += dataObj.Humidity;
             sumGas += dataObj.Gas;
             sumAir += dataObj.Air;
             sumLight += dataObj.Light;
+            numData++;
           });
-          const numData = savedDataList.length;
+        });
 
-          // Calculate averages
-          const TemperatureAvg = (sumTemperature / numData).toFixed(5);
-          const HumidityAvg = (sumHumidity / numData).toFixed(5);
-          const GasAvg = (sumGas / numData).toFixed(5);
-          const AirAvg = (sumAir / numData).toFixed(5);
-          const LightAvg = (sumLight / numData).toFixed(5);
+        // Calculate averages
+        const TemperatureAvg =
+          numData > 0 ? (sumTemperature / numData).toFixed(5) : 0;
+        const HumidityAvg =
+          numData > 0 ? (sumHumidity / numData).toFixed(5) : 0;
+        const GasAvg = numData > 0 ? (sumGas / numData).toFixed(5) : 0;
+        const AirAvg = numData > 0 ? (sumAir / numData).toFixed(5) : 0;
+        const LightAvg = numData > 0 ? (sumLight / numData).toFixed(5) : 0;
 
-          return {
-            Count: allSenssedData.length,
-            TemperatureAvg,
-            HumidityAvg,
-            GasAvg,
-            AirAvg,
-            LightAvg,
-          };
-        }
-
-        return allSenssedData;
+        return {
+          Count,
+          TemperatureAvg,
+          HumidityAvg,
+          GasAvg,
+          AirAvg,
+          LightAvg,
+        };
       } catch (error) {
         console.error("Error fetching SenssedData:", error);
         throw new Error("Failed to fetch SenssedData.");
@@ -147,7 +149,7 @@ module.exports = {
       resolve: (payload) => {
         // This function is called whenever a new event is published
         // console.log(payload)
-        return payload; // Assuming message is the field you want to return
+        return payload.payload; // Assuming message is the field you want to return
       },
     },
   },

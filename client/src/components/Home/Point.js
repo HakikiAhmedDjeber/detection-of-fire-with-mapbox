@@ -102,7 +102,7 @@ function SensorPopup({
           <b>Lat : </b>
           {lat}
         </span>
-        <span>||</span>
+        <span>|{sensorId}|</span>
         <span id="lng">
           <b>Lang : </b> {lng}
         </span>
@@ -110,15 +110,15 @@ function SensorPopup({
       <ul className="data">
         <li>
           <h4>Temp</h4>
-          <p>{temp}</p>
+          <p>{temp.toFixed(2)}</p>
         </li>
         <li>
           <h4>Gas</h4>
-          <p>{gas}</p>
+          <p>{gas.toFixed(2)}</p>
         </li>
         <li>
           <h4>Hum</h4>
-          <p>{hum}</p>
+          <p>{hum.toFixed(2)}</p>
         </li>
       </ul>
       <span

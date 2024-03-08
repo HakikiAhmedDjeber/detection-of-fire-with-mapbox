@@ -61,12 +61,7 @@ export default function Sidebar({ region, selectSensor, allSensors }) {
         })}
       </ul>
       <h2 className="on-sensors">Off Sensors</h2>
-      <ul className="sensors">
-        <li>
-          <img src="./sensor.png" width={20} />
-          <p>sensor 2</p>
-        </li>
-      </ul>
+      <ul className="sensors"></ul>
     </div>
   );
 }

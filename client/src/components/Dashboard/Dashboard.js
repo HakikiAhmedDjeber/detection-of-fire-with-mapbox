@@ -36,7 +36,7 @@ export default function Dashboard() {
   const [sensorsNb, setSensorNb] = useState(0);
 
   function handleAverageData(newData) {
-    setAverageData([...averageData, newData]);
+    setAverageData((prevData) => [...prevData, newData]);
   }
 
   const [
@@ -72,7 +72,7 @@ export default function Dashboard() {
     // Schedule fetching every 5 seconds
     const intervalId = setInterval(() => {
       console.log("average data from interval", averageData);
-      getAverage({ variables: { secondsValue: 5000 } });
+      getAverage({ variables: { secondsValue: 1000000 } });
     }, 5000);
 
     // Clean up interval on unmount
