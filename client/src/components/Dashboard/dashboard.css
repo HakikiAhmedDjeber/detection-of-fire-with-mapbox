@@ -1,170 +1,183 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
-.history {
-  font-family: "Open Sans", sans-serif;
-  height: 100vh;
-}
 /* start header */
-.history header {
+.main-dashboard header {
   width: 100vw;
   background-color: #4caf4fde;
   box-shadow: 5px 0px 2px 5px rgba(0, 0, 0, 0.079);
   padding: 0.5rem 0;
 }
-.history header .container {
+.main-dashboard header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.history header h1 {
+.main-dashboard header h1 {
   color: white;
 }
-.history header ul {
-  font-size: 1.5rem;
-  display: flex;
-  gap: 5px;
-}
-.history header li {
-  background-color: white;
-  padding: 5px;
-  border-radius: 2px;
-  color: var(--main-green-color);
-}
-.history header .sensor-name {
-  text-transform: uppercase;
-  color: var(--main-green-color);
+.main-dashboard header .clock {
+  font-size: 2rem;
   font-weight: bold;
+  color: white;
 }
 /* end header */
-/* start main */
-.history .main {
-  background-color: #f6f6f6;
-}
-.history .main .container {
+/* start container */
+.main-dashboard .main .container {
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 2rem;
   padding: 2rem 0;
 }
-/* start map and fire */
-.history .map-and-fire {
+/* start the region and sensors */
+.main-dashboard .regions-sensors {
+  width: 50%;
+  height: 40vh;
   display: flex;
-  gap: 2rem;
-  height: 25vh;
+  flex-direction: column;
+  gap: 1rem;
 }
-.history .map-and-fire .map {
+.main-dashboard .regions-sensors li {
+  height: 10vh;
+  padding: 1rem 2rem;
+  background-color: #4caf4f4e;
   display: flex;
-  width: 69.5%;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 5px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  flex: 1;
+}
+.main-dashboard .regions-sensors .regions {
+  border: 1px solid var(--main-green-color);
+  cursor: pointer;
+}
+.main-dashboard .regions-sensors .regions .title {
+  display: flex;
+  gap: 1rem;
+}
+.main-dashboard .regions-sensors .regions .regions-number {
+  width: 15%;
+  display: flex;
+  justify-content: center;
+  font-size: 5rem;
+}
+.main-dashboard .regions-sensors .sensors {
+  background-color: white;
+  height: 15vh;
+  padding: 0;
+}
+.main-dashboard .sensors div {
+  padding: 1rem 2rem;
+  height: 100%;
+  background-color: #4caf4f4e;
+  border-radius: 5px;
+}
+.main-dashboard .sensors .sensors-nb {
+  background-color: #6c22a64e;
+  border: 1px solid #6c22a6;
+  font-weight: bold;
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+.main-dashboard .sensors .sensors-nb p {
+  font-size: 3rem;
+}
+.main-dashboard .sensors div:not(.sensors-nb) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 20%;
+}
+.main-dashboard .sensors .min {
+  border: 1px solid #e52c2c;
+  background-color: #e52c2c4e;
+}
+.main-dashboard .sensors .max {
+  border: 1px solid #0a11d8;
+  background-color: #0a11d84e;
+}
+.main-dashboard .sensors div:not(.sensors-nb) h2 {
+  font-size: 2rem;
+}
+.main-dashboard .sensors div:not(.sensors-nb) span {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+/* end the region and sensors */
+/* start map */
+.main-dashboard .map {
+  width: 45%;
   background-color: var(--main-green-color);
   box-shadow: 0px 0px 20px 0.5px rgba(0, 0, 0, 0.079);
   border-radius: 3px;
   overflow: hidden;
 }
-.history .map-and-fire .map .cont-map {
-  width: 75%;
-}
-.history .map-and-fire .sensor-position {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 2rem;
-  height: 2rem;
-  padding: 3px;
+.map .sensor-position {
+  display: block;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
-  border: 1px solid black;
+  background-color: #0a11d84e;
 }
-.history .map-and-fire .details {
+/* end map */
+/* start chart */
+.main-dashboard .dashboard-chart {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 25%;
-  background-color: var(--main-green-color);
-  color: white;
-}
-.history .details h2 {
-  width: 100%;
-  padding: 5px;
-  background-color: white;
-  color: var(--main-green-color);
-  text-align: center;
-}
-.history .details ul {
+  justify-content: center;
   padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.history .details .position {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.history .map-and-fire .fire {
-  width: 30.5%;
   background-color: white;
   box-shadow: 0px 0px 20px 0.5px rgba(0, 0, 0, 0.079);
-  border-radius: 3px;
-  padding: 1rem;
+  height: 40vh;
+  width: 60%;
+  border-radius: 5px;
 }
-.history .fire h2 {
-  font-size: 2.5rem;
-  color: var(--main-green-color);
-  height: 20%;
-}
-.history .fire .info {
+.main-dashboard .dashboard-chart .dashboard-stat {
+  padding: 2rem;
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  height: 80%;
-  gap: 1rem;
+  height: 50vh;
+  width: 100%;
 }
-.history .fire .info p {
-  font-size: 4rem;
-  font-weight: bold;
-  color: black;
+.main-dashboard .dashboard-chart .select {
+  padding: 1rem;
+  background-color: #0a11d84e;
+  border: none;
+  border-radius: 2px;
 }
-.history .fire .info img {
-  width: 4rem;
+/* end chart */
+/* start notification */
+.main-dashboard .notifications {
+  padding: 1rem;
+  background-color: white;
+  box-shadow: 0px 0px 20px 0.5px rgba(0, 0, 0, 0.079);
+  height: 40vh;
+  width: 35%;
+  border-radius: 5px;
 }
-/* end map and fire */
-/* start charts */
-.history .stats {
+.main-dashboard .notifications .header,
+.main-dashboard .dashboard-chart .header {
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 2rem;
+  align-items: center;
+  margin-bottom: 1rem;
 }
-.history .stat {
+.main-dashboard .notifications li {
+  margin-bottom: 5px;
   display: flex;
-  flex-direction: column;
-  height: 25vh;
-  width: 30%;
-  background-color: white;
-  box-shadow: 0px 0px 20px 0.5px rgba(0, 0, 0, 0.079);
-  border-radius: 3px;
-  padding: 2px;
-}
-.history .stat h1 {
-  font-size: 1.5rem;
-  color: var(--main-green-color);
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  text-align: center;
+  border-radius: 5px;
+  padding: 1rem;
+  background-color: #af4c4c4e;
 }
-/* .light {
-  background-color: rgba(255, 255, 255, 0.507) !important;
-} */
-
-/* start charts */
-/* end main */
-.fire-icon {
-  opacity: 1;
-  animation: fireIcon 1s infinite alternate; /* Apply the Icon */
-}
-
-@keyframes fireIcon {
-  0% {
-    opacity: 1; /* Start with white */
-  }
-  100% {
-    opacity: 0.6; /* End with red */
-  }
-}
+/* end notification */
+/* end container */
