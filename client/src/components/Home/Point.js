@@ -33,7 +33,7 @@ export default function Point({
       onClick={handleClick}
     >
       {sensorData ? (
-        sensorData.data.Fire == 1 && id.id === linkId ? (
+        sensorData?.data?.Fire == 1 && id.id === linkId ? (
           <>
             <img
               src="./fire.png"
@@ -53,7 +53,7 @@ export default function Point({
       {openPopup && (
         <Popup
           className={`${
-            sensorData?.data.Fire == 1 && id.id === linkId ? "fire-popup" : ""
+            sensorData?.data?.Fire == 1 && id?.id === linkId ? "fire-popup" : ""
           }`}
           ref={popup}
           latitude={lat}
@@ -72,12 +72,12 @@ export default function Point({
           ) : (
             <SensorPopup
               sensorId={linkId}
-              lat={sensorData.location.latitude}
-              lng={sensorData.location.longitude}
-              temp={sensorData.data.Temperature}
-              gas={sensorData.data.Gas}
-              hum={sensorData.data.Humidity}
-              fire={sensorData.data.Fire}
+              lat={sensorData?.location?.latitude}
+              lng={sensorData?.location?.longitude}
+              temp={sensorData?.data?.Temperature}
+              gas={sensorData?.data?.Gas}
+              hum={sensorData?.data?.Humidity}
+              fire={sensorData?.data?.Fire}
               handleChart={handleChart}
               id={id}
               onSensorId={onSensorId}
