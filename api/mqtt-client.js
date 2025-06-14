@@ -1,5 +1,5 @@
 const mqtt = require("mqtt");
-const client = mqtt.connect("mqtt://0.tcp.ngrok.io:11217"); // Use the correct broker address and port
+const client = mqtt.connect("mqtt://7.tcp.eu.ngrok.io:14590"); // Use the correct broker address and port
 
 client.on("connect", () => {
   console.log("Connected to MQTT broker");
@@ -11,7 +11,8 @@ client.on("connect", () => {
 
   setInterval(() => {
     const ToSend = {
-      id: "123",
+      id: "7",
+      deviceID: "7",
       location: {
         longitude: -0.41551,
         latitude: 35.20779,
@@ -21,7 +22,7 @@ client.on("connect", () => {
         Humidity: Math.floor(Math.random() * (35 - 20 + 1)) + 10,
         Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
         Air: 10.0,
-        Fire: 0,
+        Fire: 1,
         Light: 240,
       },
     };

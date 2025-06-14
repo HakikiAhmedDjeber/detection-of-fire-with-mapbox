@@ -12,12 +12,16 @@ export default function Point({
 }) {
   const marker = useRef(null);
   const popup = useRef(<Popup />);
-  console.log("subscribtion", sensorData);
+  console.log("subscribtion values", sensorData);
   const [openPopup, setOpenPopup] = useState(false);
 
   const handleClick = () => {
     setOpenPopup(!openPopup);
   };
+  useEffect(() => {
+    console.log(id?.id);
+    console.log(sensorData);
+  }, [sensorData, id]);
 
   return (
     <Marker
@@ -29,7 +33,7 @@ export default function Point({
       onClick={handleClick}
     >
       {sensorData ? (
-        sensorData.data.Fire == 1 ? (
+        sensorData.data.Fire == 1 && id.id === linkId ? (
           <>
             <img
               src="./fire.png"
@@ -48,7 +52,9 @@ export default function Point({
 
       {openPopup && (
         <Popup
-          className={`${sensorData?.data.Fire == 1 ? "fire-popup" : ""}`}
+          className={`${
+            sensorData?.data.Fire == 1 && id.id === linkId ? "fire-popup" : ""
+          }`}
           ref={popup}
           latitude={lat}
           longitude={lng}
@@ -56,7 +62,7 @@ export default function Point({
           closeOnClick={false}
           onClose={() => setOpenPopup(false)}
         >
-          {!sensorData ? (
+          {!sensorData || id?.id !== linkId ? (
             <SensorPopup
               sensorId={linkId}
               handleChart={handleChart}
@@ -95,8 +101,14 @@ function SensorPopup({
   onSensorId,
   sensorId,
 }) {
+  useEffect(() => {
+    console.log(sensorId);
+    console.log(lng);
+    console.log(fire);
+  });
   return (
-    <div className={`popup ${fire ? "fire" : ""}`}>
+    // <div className={`popup ${fire ? "fire" : ""}`}>
+    <div className="popup">
       <div className="location">
         <span id="lat">
           <b>Lat : </b>

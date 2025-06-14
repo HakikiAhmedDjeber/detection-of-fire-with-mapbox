@@ -31,9 +31,30 @@ const fireData = [
 let time = 10000000;
 const MySwal = withReactContent(Swal);
 export default function Dashboard() {
-  const [averageData, setAverageData] = useState([]);
+  const [averageData, setAverageData] = useState([
+    { label: 1, TemperatureAvg: 26 },
+    { label: 1, TemperatureAvg: 25 },
+    { label: 1, TemperatureAvg: 26 },
+    { label: 1, TemperatureAvg: 25 },
+    { label: 1, TemperatureAvg: 23 },
+    { label: 1, TemperatureAvg: 21 },
+    { label: 1, TemperatureAvg: 20 },
+    { label: 1, TemperatureAvg: 20 },
+    { label: 1, TemperatureAvg: 26 },
+    { label: 1, TemperatureAvg: 32 },
+    { label: 1, TemperatureAvg: 36 },
+    { label: 1, TemperatureAvg: 30 },
+    { label: 1, TemperatureAvg: 26 },
+    { label: 1, TemperatureAvg: 25 },
+    { label: 1, TemperatureAvg: 26 },
+    { label: 1, TemperatureAvg: 25 },
+    { label: 1, TemperatureAvg: 30 },
+    { label: 1, TemperatureAvg: 30 },
+    { label: 1, TemperatureAvg: 30 },
+    { label: 1, TemperatureAvg: 30 },
+  ]);
   const [allSensorsIds, setAllSensorsIds] = useState([]);
-  const [sensorsNb, setSensorNb] = useState(0);
+  const [sensorsNb, setSensorNb] = useState(3);
 
   function handleAverageData(newData) {
     setAverageData((prevData) => [...prevData, newData]);
@@ -96,11 +117,11 @@ export default function Dashboard() {
               </div>
               <div className="min">
                 <h2>Min</h2>
-                <span>-</span>
+                <span>-1</span>
               </div>
               <div className="max">
                 <h2>Max</h2>
-                <span>-</span>
+                <span>36</span>
               </div>
             </li>
           </ul>
@@ -116,7 +137,7 @@ export default function Dashboard() {
             <ul>
               <li className="notification">
                 <img src="./fire.png" width={30} height={30} alt="fire" />
-                <p>10:22:25</p>
+                <p>09:20:25</p>
                 <p>sensor 2</p>
               </li>
               <li className="notification">

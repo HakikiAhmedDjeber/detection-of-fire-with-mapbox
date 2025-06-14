@@ -14,10 +14,13 @@ export default function Map({
   allSensors,
   incomingData,
 }) {
+  useEffect(() => {
+    console.log("all sensors yah :", allSensors);
+  }, [allSensors]);
   const map = useRef(null);
   // const [sensorData, SetSensorData] = useState([null, null]);
-  const [lng, setLng] = useState(-0.87349);
-  const [lat, setLat] = useState(35.64875);
+  const [lng, setLng] = useState(-0.6408584);
+  const [lat, setLat] = useState(35.222364);
   const [zoom, setZoom] = useState(7);
   const [isSensorOpen, setIsSensorOpen] = useState(true);
 
