@@ -14,11 +14,14 @@ export default function Map({
   allSensors,
   incomingData,
 }) {
+  useEffect(() => {
+    console.log("all sensors yah :", allSensors);
+  }, [allSensors]);
   const map = useRef(null);
-  const [sensorData, SetSensorData] = useState([null, null]);
-  const [lng, setLng] = useState(-0.41551);
-  const [lat, setLat] = useState(35.20779);
-  const [zoom, setZoom] = useState(9);
+  // const [sensorData, SetSensorData] = useState([null, null]);
+  const [lng, setLng] = useState(-0.6408584);
+  const [lat, setLat] = useState(35.222364);
+  const [zoom, setZoom] = useState(7);
   const [isSensorOpen, setIsSensorOpen] = useState(true);
 
   const [openPopup, setOpenPopup] = useState(false);
@@ -63,40 +66,40 @@ export default function Map({
     { lat: 35.2, lng: -0.405 },
   ];
 
-  useEffect(() => {
-    setInterval(() => {
-      SetSensorData([
-        {
-          id: "1",
-          location: {
-            longitude: -0.41551,
-            latitude: 35.20779,
-          },
-          data: {
-            Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
-            Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
-            Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
-            Fire: 1,
-            Light: 240,
-          },
-        },
-        {
-          id: "3",
-          location: {
-            longitude: -0.41551,
-            latitude: 35.20779,
-          },
-          data: {
-            Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
-            Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
-            Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
-            Fire: 0,
-            Light: 240,
-          },
-        },
-      ]);
-    }, 5000);
-  }, []);
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     SetSensorData([
+  //       {
+  //         id: "1",
+  //         location: {
+  //           longitude: -0.41551,
+  //           latitude: 35.20779,
+  //         },
+  //         data: {
+  //           Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
+  //           Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
+  //           Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
+  //           Fire: 1,
+  //           Light: 240,
+  //         },
+  //       },
+  //       {
+  //         id: "3",
+  //         location: {
+  //           longitude: -0.41551,
+  //           latitude: 35.20779,
+  //         },
+  //         data: {
+  //           Temperature: Math.floor(Math.random() * (24 - 18 + 1)) + 18,
+  //           Humidity: Math.floor(Math.random() * (80 - 60 + 1)) + 60,
+  //           Gas: Math.floor(Math.random() * (35 - 20 + 1)) + 20,
+  //           Fire: 0,
+  //           Light: 240,
+  //         },
+  //       },
+  //     ]);
+  //   }, 5000);
+  // }, []);
 
   return (
     <div className="map">

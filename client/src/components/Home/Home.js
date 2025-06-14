@@ -11,6 +11,26 @@ import {
   GET_ONLYIDs,
 } from "../../GraphQL/queries";
 
+// const local = [
+//   { longitude: -0.6408584, latitude: 35.222364 },
+//   { longitude: -0.6408584, latitude: 35.2223644 },
+// ];
+
+const local = [
+  ,
+  ,
+  {
+    longitude: -0.64085,
+    latitude: 35.222363,
+  },
+
+  ,
+  ,
+  ,
+  { longitude: -0.6408584, latitude: 35.22 },
+  ,
+  { longitude: -0.65, latitude: 35.2223644 },
+];
 export default function Home() {
   const [SensorData, setSensorData] = useState(null);
   const [regionName, setRegionName] = useState("");
@@ -49,10 +69,12 @@ export default function Home() {
     if (!isLoadingIds) {
       if (responseDataIds) {
         console.log("Recieved Ids and location ==> ", responseDataIds);
-        const allSensors = responseDataIds.GetAll.map((ele) => ({
-          id: ele.deviceID,
-          location: ele.location,
-        }));
+        const allSensors = responseDataIds.GetAll.map((ele, id) => {
+          return {
+            id: ele.deviceID,
+            location: local[ele.deviceID - 1],
+          };
+        });
         setAllSensorsIds(uniqueById(allSensors));
       }
     }
@@ -98,9 +120,9 @@ export default function Home() {
 
   // viewport
   const [viewport, setViewport] = useState({
-    longitude: -0.41551,
-    latitude: 35.20779,
-    zoom: 12,
+    longitude: -0.6408584,
+    latitude: 35.2223642,
+    zoom: 14.8,
   });
 
   function handleViewport(view) {

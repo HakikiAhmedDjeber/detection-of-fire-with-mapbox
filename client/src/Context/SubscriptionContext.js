@@ -16,6 +16,7 @@ export const SubscriptionProvider = ({ children }) => {
     onData: (options) => {
       const { data } = options;
       setIncomingData(data);
+      console.log("dkajkla data", data);
     },
     onError: (err) => {
       console.log(err);
